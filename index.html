@@ -29,11 +29,16 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -48,12 +53,31 @@
                 radial-gradient(circle at 90% 80%, rgba(150, 119, 64, 0.05) 0%, transparent 20%);
             font-family: 'Noto Serif TC', serif;
             color: #5D5D5D;
+            -webkit-font-smoothing: antialiased;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 10px 40px rgba(150, 119, 64, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .special-card {
+            background: linear-gradient(145deg, #2c241b 0%, #4a3b2a 100%);
+            color: #eaddcf;
+            border: 1px solid #967740;
+            position: relative;
+            overflow: hidden;
+        }
+        .special-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(150, 119, 64, 0.3) 0%, transparent 60%);
+            animation: pulse-slow 6s infinite;
         }
         .crystal-btn {
             background: #967740;
@@ -90,6 +114,7 @@
             display: inline-block;
             margin: 3px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .tag-pill:hover {
             border-color: #967740;
@@ -104,14 +129,17 @@
             font-family: 'Lato', sans-serif;
             letter-spacing: 1px;
             cursor: pointer;
+            width: 100%;
         }
-        .fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
         
         .quote-card {
             background: linear-gradient(135deg, #fffcf5 0%, #fff 100%);
             border: 1px solid #f0e6d2;
             position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .quote-card::before {
             content: '"';
@@ -122,143 +150,257 @@
             color: #967740;
             opacity: 0.1;
             font-family: serif;
+            line-height: 1;
         }
+        
+        /* Utility for animation delay */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body class="min-h-screen flex flex-col items-center py-6 px-4 md:py-12 md:px-8">
 
     <!-- Crystal Decoration Background -->
-    <div class="fixed top-10 left-10 w-32 h-32 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="fixed bottom-10 right-10 w-48 h-48 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed top-10 left-10 w-32 h-32 md:w-64 md:h-64 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed bottom-10 right-10 w-48 h-48 md:w-80 md:h-80 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="max-w-md w-full relative z-10">
+    <!-- Main Container -->
+    <div class="w-full max-w-md md:max-w-2xl lg:max-w-4xl relative z-10">
         
         <!-- Header -->
-        <header class="text-center mb-10 fade-up" style="animation-delay: 0.1s;">
+        <header class="text-center mb-8 md:mb-12 animate-fade-in-up delay-100">
             <div class="inline-block p-4 mb-4 rounded-full border border-gold/30 bg-white/50 animate-float">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#967740" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-gold">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-serif font-medium text-gray-800 tracking-widest mb-2">靈數與水晶</h1>
-            <p class="text-gold text-xs uppercase tracking-[0.3em] font-sans">Numerology & Crystal Energy</p>
+            <h1 class="text-3xl md:text-4xl font-serif font-medium text-gray-800 tracking-widest mb-2">靈數與水晶</h1>
+            <p class="text-gold text-xs md:text-sm uppercase tracking-[0.3em] font-sans">Numerology & Crystal Energy</p>
         </header>
 
         <!-- Input Card -->
-        <div class="glass-card rounded-3xl p-8 mb-8 fade-up" style="animation-delay: 0.2s;">
+        <div class="glass-card rounded-3xl p-8 mb-8 animate-fade-in-up delay-200 mx-auto max-w-lg">
             <div class="flex flex-col gap-4">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Input Your Birth Date</label>
-                <input type="date" id="birthdate" class="w-full rounded-xl outline-none focus:ring-1 focus:ring-gold focus:border-gold transition-shadow text-lg text-center shadow-sm">
-                <button onclick="calculate()" class="crystal-btn w-full py-4 rounded-xl font-medium tracking-widest text-sm uppercase mt-2 shadow-lg">
-                    開啟能量指引
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1 text-center md:text-left">Input Your Birth Date</label>
+                <div class="relative">
+                    <input type="date" id="birthdate" class="w-full rounded-xl outline-none focus:ring-1 focus:ring-gold focus:border-gold transition-shadow text-lg text-center shadow-sm h-14">
+                </div>
+                <button onclick="calculate()" class="crystal-btn w-full py-4 rounded-xl font-medium tracking-widest text-sm uppercase mt-2 shadow-lg h-14 flex items-center justify-center gap-2">
+                    <span>開啟能量指引</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
                 </button>
             </div>
         </div>
 
         <!-- Result Container -->
-        <div id="resultSection" class="hidden flex flex-col gap-6">
+        <div id="resultSection" class="hidden flex flex-col gap-6 md:gap-8 pb-12">
 
-            <!-- 1. Life Path -->
-            <div class="glass-card rounded-3xl p-8 text-center fade-up relative overflow-hidden">
+            <!-- 1. Life Path (Full Width) -->
+            <div class="glass-card rounded-3xl p-8 md:p-10 text-center animate-fade-in-up relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
-                <span class="text-xs text-gold uppercase tracking-widest border border-gold px-3 py-1 rounded-full">Life Path Number</span>
-                <div class="mt-4 mb-2">
-                    <span class="text-5xl font-serif text-gray-800" id="lifePathNum">?</span>
+                <span class="text-xs text-gold uppercase tracking-widest border border-gold px-4 py-1.5 rounded-full inline-block mb-6">Life Path Number</span>
+                
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                    <div class="shrink-0">
+                        <span class="text-6xl md:text-8xl font-serif text-gray-800 leading-none" id="lifePathNum">?</span>
+                    </div>
+                    <div class="text-left max-w-lg">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-700 mb-3 text-center md:text-left" id="lifePathTitle"></h2>
+                        <p class="text-sm md:text-base text-gray-600 leading-relaxed font-light text-justify" id="lifePathDesc"></p>
+                    </div>
                 </div>
-                <h2 class="text-lg font-bold text-gray-700 mb-4" id="lifePathTitle"></h2>
-                <p class="text-sm text-gray-500 leading-relaxed font-light text-justify" id="lifePathDesc"></p>
             </div>
 
-            <!-- 2. Missing Numbers & Connections -->
-            <div class="glass-card rounded-3xl p-6 fade-up">
+            <!-- 2. Missing Numbers & Connections (Grid on Tablet+) -->
+            <div class="glass-card rounded-3xl p-6 md:p-10 animate-fade-in-up delay-100">
                 <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                    <div class="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold">
+                    <div class="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
                     </div>
-                    <h3 class="text-lg font-serif text-gray-800">能量空缺與連線效應</h3>
+                    <h3 class="text-lg md:text-xl font-serif text-gray-800 font-bold">能量空缺與連線效應</h3>
                 </div>
 
-                <div id="missingContainer" class="space-y-6">
+                <!-- NEW: Special Crystal Recommendations -->
+                <div id="specialSection" class="hidden mb-8">
+                    <div class="special-card rounded-2xl p-6 shadow-xl transform hover:-translate-y-1 transition-transform duration-500 relative z-0">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-4 border-b border-[#967740]/50 pb-3">
+                                <h4 class="text-lg font-bold text-[#bca065] flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18l15-9-15-9z"/></svg>
+                                    店長私藏・高階全能補給
+                                </h4>
+                                <span class="text-[10px] uppercase tracking-widest bg-[#967740] text-white px-2 py-1 rounded">Special Edition</span>
+                            </div>
+                            <p class="text-sm text-gray-300 mb-4 font-light">
+                                根據您的空缺數組合，建議優先選擇以下 <span class="text-[#bca065] font-bold">高頻能量水晶</span>，一次補足多重能量，效益更高。
+                            </p>
+                            <div id="specialContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Dynamic Special Crystals -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missing Container -->
+                <div id="missingContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <!-- Dynamic Content -->
                 </div>
 
-                <div id="noMissing" class="hidden p-6 text-center bg-gold/5 rounded-2xl border border-gold/10">
-                    <p class="text-gold font-medium">您的能量非常圓滿</p>
-                    <p class="text-xs text-gray-500 mt-2">您的命盤沒有空缺數，建議佩戴白水晶或閃靈鑽來放大既有優勢。</p>
+                <div id="noMissing" class="hidden p-8 text-center bg-gold/5 rounded-2xl border border-gold/10">
+                    <p class="text-gold font-medium text-lg">您的能量非常圓滿</p>
+                    <p class="text-sm text-gray-500 mt-2">您的命盤沒有空缺數，建議佩戴「透體白水晶」或「閃靈鑽」來放大既有優勢。</p>
                 </div>
             </div>
 
             <!-- 3. Flow Month & Daily Quote -->
-            <div class="glass-card rounded-3xl p-6 fade-up relative">
-                <div class="absolute -right-4 -top-4 text-9xl text-gold opacity-[0.03] font-serif pointer-events-none select-none">Time</div>
+            <div class="glass-card rounded-3xl p-6 md:p-10 animate-fade-in-up delay-200 relative">
+                <div class="absolute -right-4 -top-4 text-9xl text-gold opacity-[0.03] font-serif pointer-events-none select-none hidden md:block">Time</div>
                 
-                <!-- Flow Month Header -->
-                <div class="flex justify-between items-end mb-4">
+                <!-- Flow Header -->
+                <div class="flex justify-between items-end mb-6 md:mb-8">
                     <div>
                         <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Current Energy</p>
-                        <h3 class="text-xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-2xl ml-1">?</span> 運勢</h3>
+                        <h3 class="text-xl md:text-2xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-3xl ml-1 font-bold">?</span> 運勢</h3>
                     </div>
                     <div class="text-right">
-                        <p id="currentDateDisplay" class="text-xs font-sans text-gray-400"></p>
+                        <p id="currentDateDisplay" class="text-xs md:text-sm font-sans text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-lg"></p>
                     </div>
                 </div>
 
-                <!-- Monthly Content -->
-                <div class="bg-gradient-to-br from-[#FDFCF8] to-[#F7F3EA] p-5 rounded-2xl border border-white shadow-inner mb-6">
-                    <div class="mb-3">
-                        <span class="text-xs font-bold text-gold uppercase tracking-wider block mb-2">Monthly Crystals</span>
-                        <div id="flowCrystal" class="flex flex-wrap gap-1"></div>
+                <!-- Content Area -->
+                <div class="flex flex-col lg:flex-row gap-6">
+                    
+                    <!-- Monthly Content -->
+                    <div class="flex-1 bg-gradient-to-br from-[#FDFCF8] to-[#F7F3EA] p-5 md:p-6 rounded-2xl border border-white shadow-inner flex flex-col">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold text-gold uppercase tracking-wider block mb-3">Monthly Crystals</span>
+                            <div id="flowCrystal" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <p id="flowDesc" class="text-sm md:text-base text-gray-600 font-light leading-relaxed text-justify mt-auto pt-4 border-t border-gray-200/50"></p>
                     </div>
-                    <p id="flowDesc" class="text-sm text-gray-600 font-light leading-relaxed text-justify mt-3 pt-3 border-t border-gray-200/50"></p>
-                </div>
 
-                <!-- NEW: Daily Golden Sentence -->
-                <div class="quote-card rounded-xl p-6 shadow-sm mt-4 animate-fade-up" style="animation-delay: 0.1s;">
-                    <div class="flex justify-between items-center mb-3">
-                         <span class="text-[10px] tracking-[0.2em] uppercase text-gold font-bold bg-gold/10 px-2 py-1 rounded">Daily Insight</span>
-                         <span class="text-xs text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600">?</span></span>
+                    <!-- Daily Quote -->
+                    <div class="lg:w-2/5">
+                        <div class="quote-card rounded-xl p-6 shadow-sm h-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-[10px] tracking-[0.2em] uppercase text-gold font-bold bg-gold/10 px-2 py-1 rounded">Daily Insight</span>
+                                <span class="text-xs text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600 text-lg mx-1">?</span></span>
+                            </div>
+                            <p id="dailyQuoteText" class="text-base md:text-lg font-serif text-gray-700 leading-relaxed font-medium text-center italic my-2"></p>
+                            <div class="text-center mt-4">
+                                <div class="w-8 h-0.5 bg-gold/30 mx-auto rounded-full"></div>
+                            </div>
+                        </div>
                     </div>
-                    <p id="dailyQuoteText" class="text-base font-serif text-gray-700 leading-relaxed font-medium text-center italic"></p>
-                    <div class="text-center mt-3">
-                         <div class="w-8 h-0.5 bg-gold/30 mx-auto rounded-full"></div>
-                    </div>
-                </div>
 
+                </div>
             </div>
 
-            <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-xs uppercase tracking-widest py-4 transition-colors">
-                重新計算 Reset
-            </button>
+            <div class="text-center mt-4">
+                <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-xs uppercase tracking-widest py-4 transition-colors border-b border-transparent hover:border-gold">
+                    重新計算 Reset
+                </button>
+            </div>
 
         </div>
     </div>
 
     <script>
-        // --- 核心資料 ---
-
+        // --- 資料庫整合：生命靈數 x 水晶 x 官網品項 ---
+        
         const lifePathData = {
-            1: { title: "開創者", desc: "您是天生的領袖，擁有獨立、創新的靈魂。適合能增強決策力與氣場的水晶。" },
-            2: { title: "協調者", desc: "您擁有細膩的感知力，擅長合作與溝通。適合能帶來和諧與平衡情緒的水晶。" },
-            3: { title: "藝術家", desc: "您充滿創意與赤子之心，善於表達。適合能激發靈感、保持樂觀能量的水晶。" },
-            4: { title: "建設者", desc: "您追求穩定與秩序，做事腳踏實地。適合能鞏固基礎、帶來安全感與正財的水晶。" },
-            5: { title: "冒險家", desc: "您熱愛自由與變化，適應力極強。適合能保護旅途、增強溝通與專注的水晶。" },
-            6: { title: "療癒者", desc: "您重視情感與家庭，充滿愛與責任。適合能療癒心輪、帶來美好關係的水晶。" },
-            7: { title: "思考者", desc: "您追求真理，直覺敏銳，喜愛鑽研。適合能幫助深層靜心、提升靈性的水晶。" },
-            8: { title: "實踐家", desc: "您擁有強大的執行力與豐盛意識。適合能顯化財富、增強個人威望的水晶。" },
-            9: { title: "哲學家", desc: "您擁有博愛精神與智慧，樂於奉獻。適合全方位淨化、連結高我意識的水晶。" }
+            1: { title: "開創者 (The Leader)", desc: "您擁有強大的獨立性與開創精神，適合擔任決策者。但需注意「固執」與「堅持」的區別，學習包容不同聲音，找到團隊平衡。" },
+            2: { title: "協調者 (The Mediator)", desc: "您富有同理心，擅長建立情感連結，是極佳的合作夥伴。挑戰在於過度在意他人感受而失去自我立場，需學習劃定界線。" },
+            3: { title: "藝術家 (The Communicator)", desc: "您充滿想像力與幽默感，擁有孩子般的純真。在藝術與創意領域極具天賦，但有時想法過於分散，需學習專注與務實行動。" },
+            4: { title: "建設者 (The Builder)", desc: "您是腳踏實地的實幹家，重視規劃與結構，給人強烈的安全感。挑戰在於過度固執或內心隱藏的不安，需學習彈性變通。" },
+            5: { title: "冒險家 (The Adventurer)", desc: "您天生渴望自由，適應力強，熱愛探索未知。但容易缺乏持續性，若能專注於長期目標，將能收穫更多成功。" },
+            6: { title: "療癒者 (The Nurturer)", desc: "您擁有強烈的責任感與關懷心，重視家庭與承諾。需注意不要過度犧牲自己，學習「平衡對別人的愛與對自己的愛」。" },
+            7: { title: "思考者 (The Analyst)", desc: "您喜歡探究真理，直覺敏銳，對於無法證明的事物抱持懷疑。適合透過獨處與冥想來發展內在深層思維。" },
+            8: { title: "實踐家 (The Executive)", desc: "您對目標有極高執行力，重視豐盛與權力。天生具備商業頭腦，但需注意避免因目的性過強而忽略原則，相信自我價值。" },
+            9: { title: "人道主義者 (The Humanitarian)", desc: "您擁有博愛精神與智慧，樂於奉獻。若能無私助人，往往能獲得意想不到的回報。需在夢想與現實間找到平衡。" }
         };
 
+        // 水晶名稱已簡化 (移除：手串, 球, 愛心, 擺件, 隨形, 龍龜, 碎石, 高品, 透體, 生肖)
         const numberCrystals = {
-            1: { desc: "行動力與自信", stones: ["紅瑪瑙", "硃砂", "黑金超七", "金運石", "鈦赫茲"] },
-            2: { desc: "平衡與協調", stones: ["太陽石", "白月光", "蛋白石", "女王貝", "白水晶"] },
-            3: { desc: "創意與表達", stones: ["黃水晶", "黃膠花", "鈦晶", "黃水晶骨幹"] },
-            4: { desc: "穩定與安全感", stones: ["綠幽靈", "綠橄欖", "綠螢石", "綠月光"] },
-            5: { desc: "自由與溝通", stones: ["海藍寶", "天河石", "藍紋瑪瑙", "天青石"] },
-            6: { desc: "愛與療癒", stones: ["粉水晶", "草莓晶", "薔薇輝石", "葡萄石"] },
-            7: { desc: "直覺與靈性", stones: ["紫水晶", "紫鈦晶", "紫螢石", "拉長石"] },
-            8: { desc: "豐盛與權力", stones: ["鈦晶", "天鐵", "閃靈鑽", "黃水晶骨幹"] },
-            9: { desc: "智慧與淨化", stones: ["高光拉長石", "白水晶", "閃靈鑽", "藥王石"] }
+            1: { 
+                desc: "增強領導力與行動力", 
+                stones: ["紫晶仙人掌", "金運石", "硃砂", "紅瑪瑙", "鈦赫茲"] 
+            },
+            2: { 
+                desc: "平衡情緒與自我界線", 
+                stones: ["黑碧璽", "異極礦", "粉晶", "月光石", "女王貝"] 
+            },
+            3: { 
+                desc: "激發創意與快樂", 
+                stones: ["黃水晶", "黃膠花", "鈦晶", "太陽石"] 
+            },
+            4: { 
+                desc: "建立安全感與彈性", 
+                stones: ["藍光拉長石", "粉晶", "黑碧璽", "綠幽靈", "綠橄欖石"] 
+            },
+            5: { 
+                desc: "穩定情緒與溝通", 
+                stones: ["異極礦", "藍紋瑪瑙", "天河石", "海藍寶"] 
+            },
+            6: { 
+                desc: "療癒焦慮與關懷", 
+                stones: ["藥王石", "粉晶", "草莓晶"] 
+            },
+            7: { 
+                desc: "提升直覺與深層思考", 
+                stones: ["藍光拉長石", "紫水晶", "紫光拉長石", "七彩螢石", "薰衣草螢石"] 
+            },
+            8: { 
+                desc: "顯化財富與抗壓", 
+                stones: ["金運石", "天鐵", "鈦晶", "黑金超七", "黃水晶"] 
+            },
+            9: { 
+                desc: "慈悲與靈性連結", 
+                stones: ["藥王石", "紫晶仙人掌", "粉晶", "拉長石", "閃靈鑽"] 
+            }
         };
+
+        // 特殊款也已簡化名稱
+        const specialCrystals = [
+            { 
+                name: "黑金超七", 
+                target: "all", 
+                covers: [1, 2, 3, 4, 5, 6, 7],
+                desc: "【全脈輪平衡】對應人體七大脈輪，能量極強，適合空缺數較多者，能一次補足全方位能量，提升整體運勢。" 
+            },
+            { 
+                name: "金運石", 
+                target: "specific", 
+                covers: [1, 8], 
+                desc: "【行動顯化】結合黑色的極致防護(1號)與金色的顯化力量(8號)，能幫助您將想法落地執行，並轉化為實質財富與權威。" 
+            },
+            { 
+                name: "七彩螢石", 
+                target: "specific", 
+                covers: [4, 7], 
+                desc: "【智慧與穩定】螢石結合了綠色的穩定能量與紫色的靈性能量。若您同時缺4(綠)與7(紫)，這是開啟智慧與穩定心性的完美選擇。" 
+            },
+            { 
+                name: "紫鈦晶", 
+                target: "specific", 
+                covers: [7, 8], 
+                desc: "【靈性之富】極為稀有，融合紫水晶的靈性智慧與鈦晶的強大財運。適合需要運用直覺決策來創造財富的人。" 
+            },
+            { 
+                name: "藥王石", 
+                target: "specific", 
+                covers: [6, 9], 
+                desc: "【身心療癒】對應心輪與高階能量，能釋放焦慮(6號)並穩固慈悲心(9號)，是強大的健康與情緒守護石。" 
+            },
+             { 
+                name: "拉長石", 
+                target: "specific", 
+                covers: [4, 7, 9], 
+                desc: "【靈魂行者】能開闊僵化思維(4號)，提升直覺智慧(7號)，並連結高階意識，適合渴望靈性突破的人。" 
+            }
+        ];
 
         const linesDef = [
             { nums: [1, 2, 3], name: "藝術線", benefit: "擁有美學與創意的能量，能自在表達自我。" },
@@ -272,32 +414,30 @@
         ];
 
         const flowMonthData = {
-            1: { keyword: "播種期", desc: "這是採取行動的最佳時機。適合佩戴紅瑪瑙或金運石，增強開創的勇氣。" },
-            2: { keyword: "蟄伏期", desc: "適合合作與細膩溝通。推薦佩戴月光石或珍珠，讓情緒保持柔和穩定。" },
-            3: { keyword: "萌芽期", desc: "創意與社交能量活躍。適合佩戴黃水晶或鈦晶，展現您的光芒。" },
-            4: { keyword: "紮根期", desc: "需要專注與務實。推薦綠幽靈或綠橄欖，幫助您鞏固工作成果。" },
-            5: { keyword: "變化期", desc: "意想不到的機會與變動。適合海藍寶，幫助您在變動中保持順暢溝通。" },
-            6: { keyword: "關懷期", desc: "重心回歸情感與愛。推薦粉水晶或草莓晶，療癒自己與他人的關係。" },
-            7: { keyword: "省思期", desc: "適合獨處與進修的時刻。推薦紫水晶或紫螢石，提升內在智慧。" },
-            8: { keyword: "收穫期", desc: "成果顯化與財務決策。適合天鐵或鈦晶，承接宇宙的豐盛能量。" },
-            9: { keyword: "完結期", desc: "清理與放下的時刻。推薦拉長石或白水晶，淨化並準備迎接新循環。" }
+            1: { keyword: "播種期", desc: "這是採取行動的最佳時機。適合佩戴「紅瑪瑙」或「金運石」，增強開創的勇氣，別猶豫，現在就是開始的第一步。" },
+            2: { keyword: "蟄伏期", desc: "適合合作與細膩溝通的時刻。推薦佩戴「月光石」或「異極礦」，讓情緒保持柔和穩定，耐心等待種子發芽。" },
+            3: { keyword: "萌芽期", desc: "創意與社交能量活躍。適合佩戴「黃水晶」或「太陽石」，展現您的光芒，多參加聚會，好運來自人與人的連結。" },
+            4: { keyword: "紮根期", desc: "需要專注與務實。推薦「綠幽靈」或「黑碧璽」，幫助您釋放壓力並鞏固工作成果，現在的努力是為了更長遠的未來。" },
+            5: { keyword: "變化期", desc: "意想不到的機會與變動。適合「海藍寶」或「藍紋瑪瑙」，幫助您在變動中保持順暢溝通，擁抱改變。" },
+            6: { keyword: "關懷期", desc: "重心回歸情感與愛。推薦「粉晶」或「藥王石」，療癒自己與他人的關係，用愛化解一切隔閡。" },
+            7: { keyword: "省思期", desc: "適合獨處與進修的時刻。推薦「紫水晶」或「拉長石」，提升內在智慧，給自己一點空間，答案在心裡。" },
+            8: { keyword: "收穫期", desc: "成果顯化與財務決策。適合「天鐵」或「鈦晶」，承接宇宙的豐盛能量，肯定自己的價值，你值得擁有。" },
+            9: { keyword: "完結期", desc: "清理與放下的時刻。推薦「白水晶」或「閃靈鑽」，淨化並準備迎接新循環，斷捨離是為了迎接更好的。" }
         };
 
-        // 新增：每日宇宙金句 (根據流日能量)
         const dailyQuotes = {
-            1: "今天的能量適合「開始」。別讓猶豫阻擋你的腳步，相信直覺，勇敢為自己踏出第一步。",
-            2: "今天的能量柔軟而細膩。若感到情緒波動或敏感，請給自己一個擁抱，溫柔其實是種強大的力量。",
-            3: "今天的能量充滿創意與孩子氣。別把話悶在心裡，試著表達真實的感受，快樂會隨之而來。",
-            4: "今天的能量需要「穩定」。即使外在環境變動，請記得你的內心依然可以像大樹一樣扎根安穩。",
-            5: "今天的能量自由奔放。若計畫趕不上變化，不如享受這場冒險，驚喜往往藏在未知的轉彎處。",
-            6: "今天的能量充滿愛與責任。在照顧別人的同時，別忘了留一杯茶的時間給自己，你也很重要。",
-            7: "今天的能量適合沉澱。遠離喧囂，給大腦一點空白，你尋找的答案往往會在靜心中浮現。",
-            8: "今天的能量豐盛強大。請相信自己的價值，你有能力顯化心中渴望的富足與成就。",
-            9: "今天的能量適合「清理」。放下那些不再服務於你的情緒與舊物，騰出空間，迎接新的美好。"
+            1: "【流日1】今天的能量適合「開始」。別讓猶豫阻擋你的腳步，相信直覺，勇敢為自己踏出第一步。",
+            2: "【流日2】今天的能量柔軟而細膩。若感到情緒波動，請給自己一個擁抱，溫柔其實是種強大的力量。",
+            3: "【流日3】今天的能量充滿創意與孩子氣。別把話悶在心裡，試著表達真實的感受，快樂會隨之而來。",
+            4: "【流日4】今天的能量需要「穩定」。即使外在環境變動，請記得你的內心依然可以像大樹一樣扎根安穩。",
+            5: "【流日5】今天的能量自由奔放。若計畫趕不上變化，不如享受這場冒險，驚喜往往藏在未知的轉彎處。",
+            6: "【流日6】今天的能量充滿愛與責任。在照顧別人的同時，別忘了留一杯茶的時間給自己，你也很重要。",
+            7: "【流日7】今天的能量適合沉澱。遠離喧囂，給大腦一點空白，你尋找的答案往往會在靜心中浮現。",
+            8: "【流日8】今天的能量豐盛強大。請相信自己的價值，你有能力顯化心中渴望的富足與成就。",
+            9: "【流日9】今天的能量適合「清理」。放下那些不再服務於你的情緒與舊物，騰出空間，迎接新的美好。"
         };
 
         // --- 邏輯函數 ---
-
         function sumDigits(num) {
             let sum = 0;
             const digits = num.toString().split('');
@@ -332,6 +472,31 @@
             });
             return potentialLines;
         }
+        
+        function getSpecialRecommendations(missingArr) {
+            const recs = [];
+            const missingSet = new Set(missingArr);
+            
+            if (missingArr.length >= 3) {
+                const s7 = specialCrystals.find(c => c.name.includes("超七"));
+                if(s7) recs.push(s7);
+            }
+            
+            specialCrystals.forEach(crystal => {
+                if (crystal.target === 'specific') {
+                    let matchCount = 0;
+                    crystal.covers.forEach(n => {
+                        if (missingSet.has(n)) matchCount++;
+                    });
+                    
+                    if (matchCount >= 2) {
+                        recs.push(crystal);
+                    }
+                }
+            });
+            
+            return recs;
+        }
 
         function calculate() {
             const input = document.getElementById('birthdate').value;
@@ -362,60 +527,95 @@
             }
 
             const missingContainer = document.getElementById('missingContainer');
+            const specialSection = document.getElementById('specialSection');
+            const specialContainer = document.getElementById('specialContainer');
+            
             missingContainer.innerHTML = '';
+            specialContainer.innerHTML = '';
 
             if (missing.length === 0) {
                 document.getElementById('noMissing').classList.remove('hidden');
+                document.getElementById('missingContainer').classList.add('hidden');
+                specialSection.classList.add('hidden');
             } else {
                 document.getElementById('noMissing').classList.add('hidden');
+                document.getElementById('missingContainer').classList.remove('hidden');
                 
+                // --- Special Crystal Logic ---
+                const specialRecs = getSpecialRecommendations(missing);
+                if (specialRecs.length > 0) {
+                    specialSection.classList.remove('hidden');
+                    specialRecs.forEach(spec => {
+                         const div = document.createElement('div');
+                         div.className = 'bg-[#3d3124] border border-[#967740]/30 p-4 rounded-xl';
+                         const coverTags = spec.covers
+                            .filter(n => missing.includes(n))
+                            .map(n => `<span class="text-xs bg-[#bca065] text-[#2c241b] px-1.5 py-0.5 rounded font-bold mr-1">缺${n}</span>`)
+                            .join('');
+
+                         div.innerHTML = `
+                            <div class="flex justify-between items-start mb-2">
+                                <h5 class="text-[#eaddcf] font-bold text-lg">${spec.name}</h5>
+                            </div>
+                            <div class="mb-2">${coverTags}</div>
+                            <p class="text-xs text-[#bca065]/90 leading-relaxed">${spec.desc}</p>
+                         `;
+                         specialContainer.appendChild(div);
+                    });
+                } else {
+                    specialSection.classList.add('hidden');
+                }
+
+                // --- Standard Missing Logic ---
                 missing.forEach(num => {
                     const data = numberCrystals[num];
                     const newLines = checkPotentialLines(presentSet, num);
                     let lineHtml = '';
                     if (newLines.length > 0) {
                         const lineContent = newLines.map(l => 
-                            `<div class="mt-2 text-xs text-gray-600 pl-2 border-l-2 border-gold">
-                                <span class="font-bold text-gold">★ 啟動${l.name} (${l.nums.join('-')})</span>
-                                <br>${l.benefit}
+                            `<div class="mt-3 text-xs text-gray-600 pl-3 border-l-2 border-gold bg-gold/5 p-2 rounded-r-md">
+                                <span class="font-bold text-gold block mb-1">★ 啟動${l.name} (${l.nums.join('-')})</span>
+                                ${l.benefit}
                              </div>`
                         ).join('');
-                        lineHtml = `<div class="mt-3 bg-gold/5 p-3 rounded-lg">${lineContent}</div>`;
+                        lineHtml = lineContent;
                     }
 
                     const stonesHtml = data.stones.map(s => `<span class="tag-pill">${s}</span>`).join('');
 
                     const div = document.createElement('div');
-                    div.className = 'bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow';
+                    div.className = 'bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-between';
                     div.innerHTML = `
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-[#967740] text-white flex items-center justify-center font-bold text-lg font-serif shadow-md">
-                                    ${num}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">缺少 ${num} 號能量</h4>
-                                    <p class="text-xs text-gray-400">${data.desc}</p>
+                        <div>
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#967740] text-white flex items-center justify-center font-bold text-lg font-serif shadow-md shrink-0">
+                                        ${num}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-700">缺少 ${num} 號能量</h4>
+                                        <p class="text-xs text-gray-400">${data.desc}</p>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <div class="mb-3">
+                                <div class="flex flex-wrap gap-1">${stonesHtml}</div>
+                            </div>
                         </div>
-                        <div class="mt-4">
-                            <p class="text-xs text-gray-400 mb-2 font-sans tracking-wide uppercase">Crystal Recommendation</p>
-                            <div class="flex flex-wrap gap-1">${stonesHtml}</div>
-                        </div>
-                        ${lineHtml}
+                        
+                        ${lineHtml ? `<div>${lineHtml}</div>` : ''}
                     `;
                     missingContainer.appendChild(div);
                 });
             }
 
-            // 3. Flow Month & Flow Day Logic
+            // 3. Flow Month & Day Calculation (Standard)
             const today = new Date();
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth() + 1;
             const currentDay = today.getDate();
             
-            // Flow Year Calculation (Based on Last Birthday)
             let referenceYear = currentYear;
             const birthdayThisYear = new Date(currentYear, m - 1, d);
             if (today < birthdayThisYear) {
@@ -426,14 +626,9 @@
             const refStr = referenceYear.toString() + m.toString() + d.toString();
             for(let char of refStr) fySum += parseInt(char);
             const flowYear = sumDigits(fySum);
-            
-            // Flow Month
             const flowMonth = sumDigits(flowYear + currentMonth);
-            
-            // Flow Day = Flow Month + Current Day
             const flowDay = sumDigits(flowMonth + currentDay);
 
-            // UI Updates
             document.getElementById('currentDateDisplay').innerText = `${today.getFullYear()}.${currentMonth.toString().padStart(2,'0')}.${currentDay.toString().padStart(2,'0')}`;
             document.getElementById('flowMonthNum').innerText = flowMonth;
             
@@ -442,11 +637,9 @@
             document.getElementById('flowCrystal').innerHTML = recStones.map(s => `<span class="tag-pill border-gold/30 text-gold-dark bg-white">${s}</span>`).join('');
             document.getElementById('flowDesc').innerText = `【${flowInfo.keyword}】${flowInfo.desc}`;
 
-            // New: Flow Day Quote
             document.getElementById('flowDayNum').innerText = flowDay;
             document.getElementById('dailyQuoteText').innerText = dailyQuotes[flowDay];
 
-            // Show UI
             document.getElementById('resultSection').classList.remove('hidden');
             document.getElementById('resultSection').classList.add('flex');
             
