@@ -64,6 +64,23 @@
             position: relative; 
             z-index: 10;
         }
+        .special-card {
+            background: linear-gradient(145deg, #2c241b 0%, #4a3b2a 100%);
+            color: #eaddcf;
+            border: 1px solid #967740;
+            position: relative;
+            overflow: hidden;
+        }
+        .special-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(150, 119, 64, 0.3) 0%, transparent 60%);
+            animation: pulse-slow 6s infinite;
+        }
         .crystal-btn {
             background: #967740;
             color: white;
@@ -91,14 +108,14 @@
         }
         .tag-pill {
             font-family: 'Lato', sans-serif;
-            font-size: 0.75rem;
-            padding: 4px 12px;
+            font-size: 0.85rem; /* Increased from 0.75rem */
+            padding: 6px 14px; /* Increased padding */
             border-radius: 999px;
             background: #fff;
             border: 1px solid #E5E5E5;
             color: #666;
             display: inline-block;
-            margin: 3px;
+            margin: 4px;
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -108,7 +125,7 @@
         }
         input[type="date"], input[type="text"], select {
             position: relative;
-            padding: 12px;
+            padding: 14px; /* Increased padding */
             background-color: #fff;
             border: 1px solid #E0D6C2;
             color: #5D5D5D;
@@ -121,16 +138,17 @@
             appearance: none;
             -webkit-appearance: none;
             z-index: 20;
+            font-size: 1.1rem; /* Increased font size */
         }
         .select-wrapper {
             position: relative;
         }
         .select-wrapper::after {
             content: "▼";
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: #967740;
             position: absolute;
-            right: 12px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
@@ -155,7 +173,7 @@
             position: absolute;
             top: 10px;
             left: 20px;
-            font-size: 60px;
+            font-size: 70px; /* Increased size */
             color: #967740;
             opacity: 0.1;
             font-family: serif;
@@ -166,9 +184,9 @@
             background: linear-gradient(135deg, #967740 0%, #bca065 100%);
             color: white;
             font-weight: bold;
-            padding: 2px 8px;
+            padding: 4px 10px; /* Increased padding */
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.8rem; /* Increased size */
             letter-spacing: 1px;
             text-transform: uppercase;
             box-shadow: 0 2px 5px rgba(150, 119, 64, 0.3);
@@ -180,134 +198,134 @@
         .delay-400 { animation-delay: 400ms; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-6 px-4 md:py-12 md:px-8">
+<body class="min-h-screen flex flex-col items-center py-8 px-5 md:py-16 md:px-10"> <!-- Increased padding -->
 
     <!-- Decoration -->
     <div class="fixed top-10 left-10 w-32 h-32 md:w-64 md:h-64 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="fixed bottom-10 right-10 w-48 h-48 md:w-80 md:h-80 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
 
     <!-- Main Container -->
-    <div class="w-full max-w-md md:max-w-2xl lg:max-w-4xl relative z-10">
+    <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl relative z-10"> <!-- Increased max-width -->
         
         <!-- Header -->
-        <header class="text-center mb-8 md:mb-12 animate-fade-in-up delay-100">
-            <div class="inline-block p-4 mb-4 rounded-full border border-gold/30 bg-white/50 animate-float">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-gold">
+        <header class="text-center mb-10 md:mb-14 animate-fade-in-up delay-100">
+            <div class="inline-block p-5 mb-5 rounded-full border border-gold/30 bg-white/50 animate-float"> <!-- Increased padding -->
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-gold"> <!-- Increased icon size -->
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h1 class="text-3xl md:text-4xl font-serif font-medium text-gray-800 tracking-widest mb-2">靈數與水晶</h1>
-            <p class="text-gold text-xs md:text-sm uppercase tracking-[0.3em] font-sans mb-3">Numerology & Crystal Energy</p>
-            <p class="text-gray-500 text-sm leading-relaxed max-w-md mx-auto font-light">
+            <h1 class="text-4xl md:text-5xl font-serif font-medium text-gray-800 tracking-widest mb-3">靈數與水晶</h1> <!-- Increased font size -->
+            <p class="text-gold text-sm md:text-base uppercase tracking-[0.3em] font-sans mb-4">Numerology & Crystal Energy</p>
+            <p class="text-gray-500 text-base leading-relaxed max-w-lg mx-auto font-light"> <!-- Increased font size -->
                 透過出生的奧秘，探索您靈魂地圖中缺失的拼圖。<br>讓我們用水晶的能量溫柔補足您的生命靈數，<br>平衡身心磁場，讓人生旅途更加順遂美好。
             </p>
         </header>
 
         <!-- Input Card (Dropdown Version for Tablet) -->
-        <div class="glass-card rounded-3xl p-8 mb-8 animate-fade-in-up delay-200 mx-auto max-w-lg relative">
-            <div class="flex flex-col gap-4 relative z-20">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1 text-center md:text-left">Select Your Birth Date</label>
+        <div class="glass-card rounded-3xl p-10 mb-10 animate-fade-in-up delay-200 mx-auto max-w-xl relative"> <!-- Increased padding -->
+            <div class="flex flex-col gap-6 relative z-20"> <!-- Increased gap -->
+                <label class="text-sm font-bold text-gray-500 uppercase tracking-widest pl-1 text-center md:text-left">Select Your Birth Date</label> <!-- Increased font size -->
                 
-                <div class="flex gap-2">
+                <div class="flex gap-3"> <!-- Increased gap -->
                     <!-- Year -->
                     <div class="relative w-1/3 select-wrapper">
-                        <select id="birthYear" class="w-full rounded-xl border border-gold/30 bg-white px-3 py-3 text-lg text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
+                        <select id="birthYear" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer"> <!-- Increased padding/text -->
                             <option value="" disabled selected>年 Year</option>
                             <!-- JS populates -->
                         </select>
                     </div>
                     <!-- Month -->
                     <div class="relative w-1/3 select-wrapper">
-                        <select id="birthMonth" class="w-full rounded-xl border border-gold/30 bg-white px-3 py-3 text-lg text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
+                        <select id="birthMonth" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
                             <option value="" disabled selected>月 Month</option>
                             <!-- JS populates -->
                         </select>
                     </div>
                     <!-- Day -->
                     <div class="relative w-1/3 select-wrapper">
-                        <select id="birthDay" class="w-full rounded-xl border border-gold/30 bg-white px-3 py-3 text-lg text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
+                        <select id="birthDay" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
                             <option value="" disabled selected>日 Day</option>
                             <!-- JS populates -->
                         </select>
                     </div>
                 </div>
 
-                <button onclick="calculate()" class="crystal-btn w-full py-4 rounded-xl font-medium tracking-widest text-sm uppercase mt-4 shadow-lg h-14 flex items-center justify-center gap-2 cursor-pointer">
+                <button onclick="calculate()" class="crystal-btn w-full py-5 rounded-xl font-medium tracking-widest text-lg uppercase mt-5 shadow-lg flex items-center justify-center gap-3 cursor-pointer"> <!-- Increased padding/text -->
                     <span>開啟能量指引</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
                 </button>
             </div>
         </div>
 
         <!-- Result Container -->
-        <div id="resultSection" class="hidden flex flex-col gap-6 md:gap-8 pb-12">
+        <div id="resultSection" class="hidden flex flex-col gap-8 md:gap-10 pb-16"> <!-- Increased gap -->
 
             <!-- 1. Life Path -->
-            <div class="glass-card rounded-3xl p-8 md:p-10 text-center animate-fade-in-up relative overflow-hidden">
+            <div class="glass-card rounded-3xl p-10 md:p-12 text-center animate-fade-in-up relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
-                <span class="text-xs text-gold uppercase tracking-widest border border-gold px-4 py-1.5 rounded-full inline-block mb-6">Life Path Number</span>
+                <span class="text-sm text-gold uppercase tracking-widest border border-gold px-5 py-2 rounded-full inline-block mb-8">Life Path Number</span> <!-- Increased size -->
                 
-                <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
                     <div class="shrink-0 text-center">
-                        <span class="text-6xl md:text-8xl font-serif text-gray-800 leading-none" id="lifePathNum">?</span>
-                        <div id="masterTag" class="hidden mt-2">
+                        <span class="text-7xl md:text-9xl font-serif text-gray-800 leading-none" id="lifePathNum">?</span> <!-- Increased size -->
+                        <div id="masterTag" class="hidden mt-3">
                             <span class="master-badge">Master Number</span>
                         </div>
                     </div>
-                    <div class="text-left max-w-lg">
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-700 mb-3 text-center md:text-left" id="lifePathTitle"></h2>
-                        <p class="text-sm md:text-base text-gray-600 leading-relaxed font-light text-justify" id="lifePathDesc"></p>
+                    <div class="text-left max-w-xl">
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-700 mb-4 text-center md:text-left" id="lifePathTitle"></h2> <!-- Increased size -->
+                        <p class="text-base md:text-lg text-gray-600 leading-relaxed font-light text-justify" id="lifePathDesc"></p> <!-- Increased size -->
                     </div>
                 </div>
                 
-                <div class="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 text-center md:text-left">
-                    <p class="font-bold text-gold mb-1 uppercase tracking-widest">Calculation Details</p>
+                <div class="mt-8 pt-6 border-t border-gray-100 text-sm text-gray-400 text-center md:text-left"> <!-- Increased margin/text size -->
+                    <p class="font-bold text-gold mb-2 uppercase tracking-widest">Calculation Details</p>
                     <p id="calcDetails" class="leading-relaxed"></p>
                 </div>
             </div>
 
-            <!-- 2. Numerology Insights (Updated Section) -->
-            <div class="glass-card rounded-3xl p-6 md:p-8 animate-fade-in-up delay-100">
-                <div class="flex items-center gap-2 mb-4 text-gold">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                    <h3 class="text-lg font-bold">靈數小知識</h3>
+            <!-- 2. Numerology Insights -->
+            <div class="glass-card rounded-3xl p-8 md:p-10 animate-fade-in-up delay-100">
+                <div class="flex items-center gap-3 mb-6 text-gold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                    <h3 class="text-xl font-bold">靈數小知識</h3> <!-- Increased size -->
                 </div>
-                <div class="grid md:grid-cols-2 gap-6 text-sm text-gray-600 leading-relaxed">
-                    <div class="bg-white/50 p-4 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-800 mb-2">什麼是空缺數？</h4>
+                <div class="grid md:grid-cols-2 gap-8 text-base text-gray-600 leading-relaxed"> <!-- Increased gap/text size -->
+                    <div class="bg-white/50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-800 mb-3 text-lg">什麼是空缺數？</h4>
                         <p>這些空缺數，其實是靈魂留給您的「成長禮物」，而非生命的遺憾。就像拼圖中等待填補的那一塊，透過水晶的能量頻率，我們能溫柔地喚醒這些沉睡的潛能，讓身心能量更加圓滿，迎接更豐盛的自己。</p>
                     </div>
-                    <div class="bg-white/50 p-4 rounded-xl border border-gray-100">
-                        <h4 class="font-bold text-gray-800 mb-2">連線缺一個數字代表什麼？</h4>
+                    <div class="bg-white/50 p-6 rounded-xl border border-gray-100">
+                        <h4 class="font-bold text-gray-800 mb-3 text-lg">連線缺一個數字代表什麼？</h4>
                         <p>想像這是一條通往夢想的橋樑，只差最後一塊磚就能通行。當連線只缺一個數字時，代表您距離那份天賦或好運僅有一步之遙。針對性地補足它，就像接通了能量的開關，讓原本覺得「差一點點」的運勢瞬間流動起來，讓光芒真正綻放。</p>
                     </div>
                 </div>
             </div>
 
             <!-- 3. Missing Numbers & Connections -->
-            <div class="glass-card rounded-3xl p-6 md:p-10 animate-fade-in-up delay-200">
-                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                    <div class="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <div class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in-up delay-200">
+                <div class="flex items-center gap-4 mb-8 pb-5 border-b border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
                     </div>
-                    <h3 class="text-lg md:text-xl font-serif text-gray-800 font-bold">能量空缺與連線效應</h3>
+                    <h3 class="text-xl md:text-2xl font-serif text-gray-800 font-bold">能量空缺與連線效應</h3> <!-- Increased size -->
                 </div>
 
                 <!-- NEW: Special Crystal Recommendations -->
-                <div id="specialSection" class="hidden mb-8">
-                    <div class="special-card rounded-2xl p-6 shadow-xl transform hover:-translate-y-1 transition-transform duration-500 relative z-0">
+                <div id="specialSection" class="hidden mb-10">
+                    <div class="special-card rounded-2xl p-8 shadow-xl transform hover:-translate-y-1 transition-transform duration-500 relative z-0">
                         <div class="relative z-10">
-                            <div class="flex items-center justify-between mb-4 border-b border-[#967740]/50 pb-3">
-                                <h4 class="text-lg font-bold text-[#bca065] flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18l15-9-15-9z"/></svg>
+                            <div class="flex items-center justify-between mb-5 border-b border-[#967740]/50 pb-4">
+                                <h4 class="text-xl font-bold text-[#bca065] flex items-center gap-3"> <!-- Increased size -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18l15-9-15-9z"/></svg>
                                     店長私藏・高階全能補給
                                 </h4>
-                                <span class="text-[10px] uppercase tracking-widest bg-[#967740] text-white px-2 py-1 rounded">Special Edition</span>
+                                <span class="text-xs uppercase tracking-widest bg-[#967740] text-white px-3 py-1.5 rounded">Special Edition</span>
                             </div>
-                            <p class="text-sm text-gray-300 mb-4 font-light">
+                            <p class="text-base text-gray-300 mb-6 font-light"> <!-- Increased size -->
                                 根據您的空缺數組合，為您隨機精選以下 <span class="text-[#bca065] font-bold">最多6款</span> 高頻能量水晶，一次補足多重能量。
                             </p>
-                            <div id="specialContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div id="specialContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Dynamic Special Crystals -->
                             </div>
                         </div>
@@ -315,73 +333,73 @@
                 </div>
 
                 <!-- Missing Container -->
-                <div id="missingContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div id="missingContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"> <!-- Increased gap -->
                     <!-- Dynamic Content -->
                 </div>
 
-                <div id="noMissing" class="hidden p-8 text-center bg-gold/5 rounded-2xl border border-gold/10">
-                    <p class="text-gold font-medium text-lg">您的能量非常圓滿</p>
-                    <p class="text-sm text-gray-500 mt-2">您的命盤沒有空缺數，建議佩戴「白水晶」或「阿賽斯特萊」來放大既有優勢並提升頻率。</p>
+                <div id="noMissing" class="hidden p-10 text-center bg-gold/5 rounded-2xl border border-gold/10">
+                    <p class="text-gold font-medium text-xl">您的能量非常圓滿</p> <!-- Increased size -->
+                    <p class="text-base text-gray-500 mt-3">您的命盤沒有空缺數，建議佩戴「白水晶」或「阿賽斯特萊」來放大既有優勢並提升頻率。</p>
                 </div>
             </div>
 
             <!-- 4. Flow Month & Daily Quote -->
-            <div class="glass-card rounded-3xl p-6 md:p-10 animate-fade-in-up delay-300 relative">
+            <div class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in-up delay-300 relative">
                 <div class="absolute -right-4 -top-4 text-9xl text-gold opacity-[0.03] font-serif pointer-events-none select-none hidden md:block">Time</div>
                 
-                <div class="flex justify-between items-end mb-6 md:mb-8">
+                <div class="flex justify-between items-end mb-8 md:mb-10">
                     <div>
-                        <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Current Energy</p>
-                        <h3 class="text-xl md:text-2xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-3xl ml-1 font-bold">?</span> 運勢</h3>
+                        <p class="text-sm text-gray-400 uppercase tracking-widest mb-2">Current Energy</p>
+                        <h3 class="text-2xl md:text-3xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-4xl ml-1 font-bold">?</span> 運勢</h3> <!-- Increased size -->
                     </div>
                     <div class="text-right">
-                        <p id="currentDateDisplay" class="text-xs md:text-sm font-sans text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-lg"></p>
+                        <p id="currentDateDisplay" class="text-sm md:text-base font-sans text-gray-400 font-medium bg-gray-50 px-4 py-2 rounded-lg"></p> <!-- Increased padding/size -->
                     </div>
                 </div>
 
-                <div class="flex flex-col lg:flex-row gap-6">
-                    <div class="flex-1 bg-gradient-to-br from-[#FDFCF8] to-[#F7F3EA] p-5 md:p-6 rounded-2xl border border-white shadow-inner flex flex-col">
-                        <div class="mb-4">
-                            <span class="text-xs font-bold text-gold uppercase tracking-wider block mb-3">Monthly Crystals</span>
-                            <div id="flowCrystal" class="flex flex-wrap gap-2"></div>
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="flex-1 bg-gradient-to-br from-[#FDFCF8] to-[#F7F3EA] p-6 md:p-8 rounded-2xl border border-white shadow-inner flex flex-col">
+                        <div class="mb-6">
+                            <span class="text-sm font-bold text-gold uppercase tracking-wider block mb-4">Monthly Crystals</span> <!-- Increased size -->
+                            <div id="flowCrystal" class="flex flex-wrap gap-3"></div> <!-- Increased gap -->
                         </div>
-                        <p id="flowDesc" class="text-sm md:text-base text-gray-600 font-light leading-relaxed text-justify mt-auto pt-4 border-t border-gray-200/50"></p>
+                        <p id="flowDesc" class="text-base md:text-lg text-gray-600 font-light leading-relaxed text-justify mt-auto pt-6 border-t border-gray-200/50"></p> <!-- Increased size -->
                     </div>
 
                     <div class="lg:w-2/5">
-                        <div class="quote-card rounded-xl p-6 shadow-sm h-full">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-[10px] tracking-[0.2em] uppercase text-gold font-bold bg-gold/10 px-2 py-1 rounded">Daily Insight</span>
-                                <span class="text-xs text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600 text-lg mx-1">?</span></span>
+                        <div class="quote-card rounded-xl p-8 shadow-sm h-full">
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="text-xs tracking-[0.2em] uppercase text-gold font-bold bg-gold/10 px-3 py-1.5 rounded">Daily Insight</span>
+                                <span class="text-sm text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600 text-xl mx-1">?</span></span> <!-- Increased size -->
                             </div>
-                            <p id="dailyQuoteText" class="text-base md:text-lg font-serif text-gray-700 leading-relaxed font-medium text-center italic my-2"></p>
-                            <div class="text-center mt-4">
-                                <div class="w-8 h-0.5 bg-gold/30 mx-auto rounded-full"></div>
+                            <p id="dailyQuoteText" class="text-lg md:text-xl font-serif text-gray-700 leading-relaxed font-medium text-center italic my-4"></p> <!-- Increased size -->
+                            <div class="text-center mt-6">
+                                <div class="w-10 h-0.5 bg-gold/30 mx-auto rounded-full"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4 mb-12">
-                <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-xs uppercase tracking-widest py-4 transition-colors border-b border-transparent hover:border-gold cursor-pointer">
+            <div class="text-center mt-6 mb-16">
+                <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-sm uppercase tracking-widest py-6 transition-colors border-b border-transparent hover:border-gold cursor-pointer"> <!-- Increased size -->
                     重新計算 Reset
                 </button>
             </div>
             
              <!-- 5. Crystal Energy Lookup Section -->
-            <div class="glass-card rounded-3xl p-6 md:p-8 animate-fade-in-up delay-400 w-full mb-12">
-                 <div class="flex items-center justify-center gap-2 mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#967740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <h3 class="text-lg font-bold text-gray-800">水晶能量速查</h3>
+            <div class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in-up delay-400 w-full mb-16">
+                 <div class="flex items-center justify-center gap-3 mb-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#967740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <h3 class="text-2xl font-bold text-gray-800">水晶能量速查</h3> <!-- Increased size -->
                 </div>
                 
-                <div class="max-w-lg mx-auto">
-                    <div class="relative mb-6">
-                        <input type="text" id="crystalSearchInput" onkeyup="searchCrystal()" placeholder="輸入水晶名稱 (如: 白水晶、紅膠花...)" class="w-full rounded-xl border border-gray-200 bg-white/50 px-4 py-3 focus:border-gold focus:ring-1 focus:ring-gold text-center text-gray-700 placeholder-gray-400 relative z-20">
+                <div class="max-w-xl mx-auto">
+                    <div class="relative mb-8">
+                        <input type="text" id="crystalSearchInput" onkeyup="searchCrystal()" placeholder="輸入水晶名稱 (如: 白水晶、紅膠花...)" class="w-full rounded-xl border border-gray-200 bg-white/50 px-5 py-4 focus:border-gold focus:ring-1 focus:ring-gold text-center text-lg text-gray-700 placeholder-gray-400 relative z-20"> <!-- Increased padding/size -->
                     </div>
                     
-                    <div id="crystalSearchResult" class="hidden space-y-4">
+                    <div id="crystalSearchResult" class="hidden space-y-5">
                         <!-- Dynamic Results -->
                     </div>
                 </div>
