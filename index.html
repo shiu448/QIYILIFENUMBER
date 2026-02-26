@@ -30,6 +30,7 @@
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'scale-in': 'scaleIn 0.3s ease-out forwards',
                     },
                     keyframes: {
                         float: {
@@ -39,6 +40,10 @@
                         fadeInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     }
                 }
@@ -46,6 +51,11 @@
         }
     </script>
     <style>
+        /* 基礎字體加大 */
+        html {
+            font-size: 17px; 
+        }
+
         body {
             background-color: #FDFCF8;
             background-image: 
@@ -70,6 +80,7 @@
             border: 1px solid #967740;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         .special-card::before {
             content: '';
@@ -108,24 +119,46 @@
         }
         .tag-pill {
             font-family: 'Lato', sans-serif;
-            font-size: 0.85rem; /* Increased from 0.75rem */
-            padding: 6px 14px; /* Increased padding */
-            border-radius: 999px;
-            background: #fff;
-            border: 1px solid #E5E5E5;
-            color: #666;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #F9F7F2;
+            border: 1px solid #E0D6C2;
+            color: #755c32;
             display: inline-block;
             margin: 4px;
             transition: all 0.2s;
             white-space: nowrap;
+            cursor: pointer;
+            font-weight: 500;
         }
         .tag-pill:hover {
             border-color: #967740;
-            color: #967740;
+            background-color: #967740;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(150, 119, 64, 0.2);
         }
+        
+        /* Modal Styles */
+        #crystalModal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #crystalModal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #crystalModal:not(.hidden) {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Fixed Inputs & Selects for Tablet Touch with Centered Text */
         input[type="date"], input[type="text"], select {
             position: relative;
-            padding: 14px; /* Increased padding */
+            padding: 14px 40px 14px 40px; 
             background-color: #fff;
             border: 1px solid #E0D6C2;
             color: #5D5D5D;
@@ -137,23 +170,38 @@
             transition: border-color 0.3s;
             appearance: none;
             -webkit-appearance: none;
-            z-index: 20;
-            font-size: 1.1rem; /* Increased font size */
+            -moz-appearance: none;
+            z-index: 50;
+            font-size: 1.1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            text-align-last: center;
         }
+        
+        select option {
+            color: #333;
+            background: #fff;
+            text-align: center;
+        }
+        
         .select-wrapper {
             position: relative;
+            z-index: 50;
+            width: 100%;
         }
+        
         .select-wrapper::after {
             content: "▼";
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #967740;
             position: absolute;
             right: 14px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
-            z-index: 30;
+            z-index: 60;
         }
+        
         input[type="text"]:focus, select:focus {
             border-color: #967740;
             box-shadow: 0 0 0 2px rgba(150, 119, 64, 0.2);
@@ -173,7 +221,7 @@
             position: absolute;
             top: 10px;
             left: 20px;
-            font-size: 70px; /* Increased size */
+            font-size: 70px;
             color: #967740;
             opacity: 0.1;
             font-family: serif;
@@ -184,9 +232,9 @@
             background: linear-gradient(135deg, #967740 0%, #bca065 100%);
             color: white;
             font-weight: bold;
-            padding: 4px 10px; /* Increased padding */
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 0.8rem; /* Increased size */
+            font-size: 0.8rem;
             letter-spacing: 1px;
             text-transform: uppercase;
             box-shadow: 0 2px 5px rgba(150, 119, 64, 0.3);
@@ -198,59 +246,53 @@
         .delay-400 { animation-delay: 400ms; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-8 px-5 md:py-16 md:px-10"> <!-- Increased padding -->
+<body class="min-h-screen flex flex-col items-center py-8 px-5 md:py-16 md:px-10">
 
     <!-- Decoration -->
     <div class="fixed top-10 left-10 w-32 h-32 md:w-64 md:h-64 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="fixed bottom-10 right-10 w-48 h-48 md:w-80 md:h-80 bg-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
 
     <!-- Main Container -->
-    <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl relative z-10"> <!-- Increased max-width -->
+    <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl relative z-10">
         
         <!-- Header -->
         <header class="text-center mb-10 md:mb-14 animate-fade-in-up delay-100">
-            <div class="inline-block p-5 mb-5 rounded-full border border-gold/30 bg-white/50 animate-float"> <!-- Increased padding -->
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-gold"> <!-- Increased icon size -->
+            <div class="inline-block p-5 mb-5 rounded-full border border-gold/30 bg-white/50 animate-float">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-gold">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h1 class="text-4xl md:text-5xl font-serif font-medium text-gray-800 tracking-widest mb-3">靈數與水晶</h1> <!-- Increased font size -->
+            <h1 class="text-4xl md:text-5xl font-serif font-medium text-gray-800 tracking-widest mb-3">靈數與水晶</h1>
             <p class="text-gold text-sm md:text-base uppercase tracking-[0.3em] font-sans mb-4">Numerology & Crystal Energy</p>
-            <p class="text-gray-500 text-base leading-relaxed max-w-lg mx-auto font-light"> <!-- Increased font size -->
+            <p class="text-gray-500 text-base leading-relaxed max-w-lg mx-auto font-light">
                 透過出生的奧秘，探索您靈魂地圖中缺失的拼圖。<br>讓我們用水晶的能量溫柔補足您的生命靈數，<br>平衡身心磁場，讓人生旅途更加順遂美好。
             </p>
         </header>
 
-        <!-- Input Card (Dropdown Version for Tablet) -->
-        <div class="glass-card rounded-3xl p-10 mb-10 animate-fade-in-up delay-200 mx-auto max-w-xl relative"> <!-- Increased padding -->
-            <div class="flex flex-col gap-6 relative z-20"> <!-- Increased gap -->
-                <label class="text-sm font-bold text-gray-500 uppercase tracking-widest pl-1 text-center md:text-left">Select Your Birth Date</label> <!-- Increased font size -->
+        <!-- Input Card -->
+        <div class="glass-card rounded-3xl p-10 mb-10 animate-fade-in-up delay-200 mx-auto max-w-xl relative">
+            <div class="flex flex-col gap-6 relative z-20">
+                <label class="text-sm font-bold text-gray-500 uppercase tracking-widest pl-1 text-center md:text-left">Select Your Birth Date</label>
                 
-                <div class="flex gap-3"> <!-- Increased gap -->
-                    <!-- Year -->
-                    <div class="relative w-1/3 select-wrapper">
-                        <select id="birthYear" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer"> <!-- Increased padding/text -->
+                <div class="flex gap-3 relative z-50">
+                    <div class="select-wrapper w-1/3">
+                        <select id="birthYear" onchange="updateDays()">
                             <option value="" disabled selected>年 Year</option>
-                            <!-- JS populates -->
                         </select>
                     </div>
-                    <!-- Month -->
-                    <div class="relative w-1/3 select-wrapper">
-                        <select id="birthMonth" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
+                    <div class="select-wrapper w-1/3">
+                        <select id="birthMonth" onchange="updateDays()">
                             <option value="" disabled selected>月 Month</option>
-                            <!-- JS populates -->
                         </select>
                     </div>
-                    <!-- Day -->
-                    <div class="relative w-1/3 select-wrapper">
-                        <select id="birthDay" class="w-full rounded-xl border border-gold/30 bg-white px-4 py-4 text-xl text-gray-700 focus:border-gold focus:ring-1 focus:ring-gold text-center cursor-pointer">
+                    <div class="select-wrapper w-1/3">
+                        <select id="birthDay">
                             <option value="" disabled selected>日 Day</option>
-                            <!-- JS populates -->
                         </select>
                     </div>
                 </div>
 
-                <button onclick="calculate()" class="crystal-btn w-full py-5 rounded-xl font-medium tracking-widest text-lg uppercase mt-5 shadow-lg flex items-center justify-center gap-3 cursor-pointer"> <!-- Increased padding/text -->
+                <button onclick="calculate()" class="crystal-btn w-full py-5 rounded-xl font-medium tracking-widest text-lg uppercase mt-8 shadow-lg flex items-center justify-center gap-3 cursor-pointer relative z-40">
                     <span>開啟能量指引</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
                 </button>
@@ -258,27 +300,27 @@
         </div>
 
         <!-- Result Container -->
-        <div id="resultSection" class="hidden flex flex-col gap-8 md:gap-10 pb-16"> <!-- Increased gap -->
+        <div id="resultSection" class="hidden flex flex-col gap-8 md:gap-10 pb-16">
 
             <!-- 1. Life Path -->
             <div class="glass-card rounded-3xl p-10 md:p-12 text-center animate-fade-in-up relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
-                <span class="text-sm text-gold uppercase tracking-widest border border-gold px-5 py-2 rounded-full inline-block mb-8">Life Path Number</span> <!-- Increased size -->
+                <span class="text-sm text-gold uppercase tracking-widest border border-gold px-5 py-2 rounded-full inline-block mb-8">Life Path Number</span>
                 
                 <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
                     <div class="shrink-0 text-center">
-                        <span class="text-7xl md:text-9xl font-serif text-gray-800 leading-none" id="lifePathNum">?</span> <!-- Increased size -->
+                        <span class="text-7xl md:text-9xl font-serif text-gray-800 leading-none" id="lifePathNum">?</span>
                         <div id="masterTag" class="hidden mt-3">
                             <span class="master-badge">Master Number</span>
                         </div>
                     </div>
                     <div class="text-left max-w-xl">
-                        <h2 class="text-2xl md:text-3xl font-bold text-gray-700 mb-4 text-center md:text-left" id="lifePathTitle"></h2> <!-- Increased size -->
-                        <p class="text-base md:text-lg text-gray-600 leading-relaxed font-light text-justify" id="lifePathDesc"></p> <!-- Increased size -->
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-700 mb-4 text-center md:text-left" id="lifePathTitle"></h2>
+                        <p class="text-base md:text-lg text-gray-600 leading-relaxed font-light text-justify" id="lifePathDesc"></p>
                     </div>
                 </div>
                 
-                <div class="mt-8 pt-6 border-t border-gray-100 text-sm text-gray-400 text-center md:text-left"> <!-- Increased margin/text size -->
+                <div class="mt-8 pt-6 border-t border-gray-100 text-sm text-gray-400 text-center md:text-left">
                     <p class="font-bold text-gold mb-2 uppercase tracking-widest">Calculation Details</p>
                     <p id="calcDetails" class="leading-relaxed"></p>
                 </div>
@@ -288,9 +330,9 @@
             <div class="glass-card rounded-3xl p-8 md:p-10 animate-fade-in-up delay-100">
                 <div class="flex items-center gap-3 mb-6 text-gold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                    <h3 class="text-xl font-bold">靈數小知識</h3> <!-- Increased size -->
+                    <h3 class="text-xl font-bold">靈數小知識</h3>
                 </div>
-                <div class="grid md:grid-cols-2 gap-8 text-base text-gray-600 leading-relaxed"> <!-- Increased gap/text size -->
+                <div class="grid md:grid-cols-2 gap-8 text-base text-gray-600 leading-relaxed">
                     <div class="bg-white/50 p-6 rounded-xl border border-gray-100">
                         <h4 class="font-bold text-gray-800 mb-3 text-lg">什麼是空缺數？</h4>
                         <p>這些空缺數，其實是靈魂留給您的「成長禮物」，而非生命的遺憾。就像拼圖中等待填補的那一塊，透過水晶的能量頻率，我們能溫柔地喚醒這些沉睡的潛能，讓身心能量更加圓滿，迎接更豐盛的自己。</p>
@@ -308,21 +350,21 @@
                     <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-serif text-gray-800 font-bold">能量空缺與連線效應</h3> <!-- Increased size -->
+                    <h3 class="text-xl md:text-2xl font-serif text-gray-800 font-bold">能量空缺與連線效應</h3>
                 </div>
 
-                <!-- NEW: Special Crystal Recommendations -->
+                <!-- Special Crystal Recommendations -->
                 <div id="specialSection" class="hidden mb-10">
                     <div class="special-card rounded-2xl p-8 shadow-xl transform hover:-translate-y-1 transition-transform duration-500 relative z-0">
                         <div class="relative z-10">
                             <div class="flex items-center justify-between mb-5 border-b border-[#967740]/50 pb-4">
-                                <h4 class="text-xl font-bold text-[#bca065] flex items-center gap-3"> <!-- Increased size -->
+                                <h4 class="text-xl font-bold text-[#bca065] flex items-center gap-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18l15-9-15-9z"/></svg>
                                     店長私藏・高階全能補給
                                 </h4>
                                 <span class="text-xs uppercase tracking-widest bg-[#967740] text-white px-3 py-1.5 rounded">Special Edition</span>
                             </div>
-                            <p class="text-base text-gray-300 mb-6 font-light"> <!-- Increased size -->
+                            <p class="text-base text-gray-300 mb-6 font-light">
                                 根據您的空缺數組合，為您隨機精選以下 <span class="text-[#bca065] font-bold">最多6款</span> 高頻能量水晶，一次補足多重能量。
                             </p>
                             <div id="specialContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -333,12 +375,12 @@
                 </div>
 
                 <!-- Missing Container -->
-                <div id="missingContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"> <!-- Increased gap -->
+                <div id="missingContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Dynamic Content -->
                 </div>
 
                 <div id="noMissing" class="hidden p-10 text-center bg-gold/5 rounded-2xl border border-gold/10">
-                    <p class="text-gold font-medium text-xl">您的能量非常圓滿</p> <!-- Increased size -->
+                    <p class="text-gold font-medium text-xl">您的能量非常圓滿</p>
                     <p class="text-base text-gray-500 mt-3">您的命盤沒有空缺數，建議佩戴「白水晶」或「阿賽斯特萊」來放大既有優勢並提升頻率。</p>
                 </div>
             </div>
@@ -350,29 +392,29 @@
                 <div class="flex justify-between items-end mb-8 md:mb-10">
                     <div>
                         <p class="text-sm text-gray-400 uppercase tracking-widest mb-2">Current Energy</p>
-                        <h3 class="text-2xl md:text-3xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-4xl ml-1 font-bold">?</span> 運勢</h3> <!-- Increased size -->
+                        <h3 class="text-2xl md:text-3xl font-serif text-gray-800">流月 <span id="flowMonthNum" class="text-gold text-4xl ml-1 font-bold">?</span> 運勢</h3>
                     </div>
                     <div class="text-right">
-                        <p id="currentDateDisplay" class="text-sm md:text-base font-sans text-gray-400 font-medium bg-gray-50 px-4 py-2 rounded-lg"></p> <!-- Increased padding/size -->
+                        <p id="currentDateDisplay" class="text-sm md:text-base font-sans text-gray-400 font-medium bg-gray-50 px-4 py-2 rounded-lg"></p>
                     </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-8">
                     <div class="flex-1 bg-gradient-to-br from-[#FDFCF8] to-[#F7F3EA] p-6 md:p-8 rounded-2xl border border-white shadow-inner flex flex-col">
                         <div class="mb-6">
-                            <span class="text-sm font-bold text-gold uppercase tracking-wider block mb-4">Monthly Crystals</span> <!-- Increased size -->
-                            <div id="flowCrystal" class="flex flex-wrap gap-3"></div> <!-- Increased gap -->
+                            <span class="text-sm font-bold text-gold uppercase tracking-wider block mb-4">Monthly Crystals</span>
+                            <div id="flowCrystal" class="flex flex-wrap gap-3"></div>
                         </div>
-                        <p id="flowDesc" class="text-base md:text-lg text-gray-600 font-light leading-relaxed text-justify mt-auto pt-6 border-t border-gray-200/50"></p> <!-- Increased size -->
+                        <p id="flowDesc" class="text-base md:text-lg text-gray-600 font-light leading-relaxed text-justify mt-auto pt-6 border-t border-gray-200/50"></p>
                     </div>
 
                     <div class="lg:w-2/5">
                         <div class="quote-card rounded-xl p-8 shadow-sm h-full">
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-xs tracking-[0.2em] uppercase text-gold font-bold bg-gold/10 px-3 py-1.5 rounded">Daily Insight</span>
-                                <span class="text-sm text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600 text-xl mx-1">?</span></span> <!-- Increased size -->
+                                <span class="text-sm text-gray-400">流日 <span id="flowDayNum" class="font-bold text-gray-600 text-xl mx-1">?</span></span>
                             </div>
-                            <p id="dailyQuoteText" class="text-lg md:text-xl font-serif text-gray-700 leading-relaxed font-medium text-center italic my-4"></p> <!-- Increased size -->
+                            <p id="dailyQuoteText" class="text-lg md:text-xl font-serif text-gray-700 leading-relaxed font-medium text-center italic my-4"></p>
                             <div class="text-center mt-6">
                                 <div class="w-10 h-0.5 bg-gold/30 mx-auto rounded-full"></div>
                             </div>
@@ -382,7 +424,7 @@
             </div>
 
             <div class="text-center mt-6 mb-16">
-                <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-sm uppercase tracking-widest py-6 transition-colors border-b border-transparent hover:border-gold cursor-pointer"> <!-- Increased size -->
+                <button onclick="resetApp()" class="text-gray-400 hover:text-gold text-sm uppercase tracking-widest py-6 transition-colors border-b border-transparent hover:border-gold cursor-pointer">
                     重新計算 Reset
                 </button>
             </div>
@@ -391,12 +433,12 @@
             <div class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in-up delay-400 w-full mb-16">
                  <div class="flex items-center justify-center gap-3 mb-8">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#967740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <h3 class="text-2xl font-bold text-gray-800">水晶能量速查</h3> <!-- Increased size -->
+                    <h3 class="text-2xl font-bold text-gray-800">水晶能量速查</h3>
                 </div>
                 
                 <div class="max-w-xl mx-auto">
                     <div class="relative mb-8">
-                        <input type="text" id="crystalSearchInput" onkeyup="searchCrystal()" placeholder="輸入水晶名稱 (如: 白水晶、紅膠花...)" class="w-full rounded-xl border border-gray-200 bg-white/50 px-5 py-4 focus:border-gold focus:ring-1 focus:ring-gold text-center text-lg text-gray-700 placeholder-gray-400 relative z-20"> <!-- Increased padding/size -->
+                        <input type="text" id="crystalSearchInput" onkeyup="searchCrystal()" placeholder="輸入水晶名稱 (如: 白水晶、紅膠花...)" class="w-full rounded-xl border border-gray-200 bg-white/50 px-5 py-4 focus:border-gold focus:ring-1 focus:ring-gold text-center text-lg text-gray-700 placeholder-gray-400 relative z-20">
                     </div>
                     
                     <div id="crystalSearchResult" class="hidden space-y-5">
@@ -406,72 +448,62 @@
             </div>
 
         </div>
+
+        <!-- Crystal Detail Modal -->
+        <div id="crystalModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+            <!-- Modal Content -->
+            <div class="glass-card w-11/12 max-w-lg p-8 rounded-3xl relative animate-scale-in flex flex-col max-h-[90vh] overflow-y-auto">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2 text-center"></h3>
+                <div class="flex justify-center gap-2 mb-6">
+                    <span id="modalElement" class="text-xs bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase tracking-wider"></span>
+                </div>
+                
+                <div class="space-y-6 text-gray-600">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Efficacy</p>
+                        <p id="modalEffect" class="leading-relaxed"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-[#FDFCF8] p-4 rounded-xl border border-gold/20">
+                            <p class="text-xs font-bold text-gold uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> 配戴建議
+                            </p>
+                            <p id="modalWear" class="text-sm"></p>
+                        </div>
+                        <div class="bg-[#FDFCF8] p-4 rounded-xl border border-gold/20">
+                            <p class="text-xs font-bold text-gold uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4 8 4v14"/></svg> 擺放位置
+                            </p>
+                            <p id="modalPlace" class="text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- 初始化下拉選單 ---
-        window.onload = function() {
-            const yearSelect = document.getElementById('birthYear');
-            const monthSelect = document.getElementById('birthMonth');
-            const daySelect = document.getElementById('birthDay');
-            const currentYear = new Date().getFullYear();
+        // --- DATA OBJECTS (Defined FIRST to prevent Reference Errors) ---
+        
+        const linesDef = [
+            { nums: [1, 2, 3], name: "藝術線", benefit: "擁有美學與創意的能量，能自在表達自我。" },
+            { nums: [4, 5, 6], name: "組織線", benefit: "做事有條理，能完美執行計畫與解決問題。" },
+            { nums: [7, 8, 9], name: "權力線", benefit: "擁有強大氣場與貴人運，容易獲得社會成就。" },
+            { nums: [1, 4, 7], name: "務實線", benefit: "腳踏實地，對金錢與物質生活有極佳的掌控力。" },
+            { nums: [2, 5, 8], name: "感情線", benefit: "善於溝通與表達情感，擁有極佳的人緣魅力。" },
+            { nums: [3, 6, 9], name: "智慧線", benefit: "充滿靈性智慧，直覺敏銳，能洞察事物本質。" },
+            { nums: [1, 5, 9], name: "事業線", benefit: "擁有強烈企圖心與工作狂特質，事業發展無可限量。" },
+            { nums: [3, 5, 7], name: "人緣線", benefit: "極具個人魅力，受人歡迎，容易成為群體焦點。" }
+        ];
 
-            for (let y = currentYear; y >= 1920; y--) {
-                let opt = document.createElement('option');
-                opt.value = y;
-                opt.innerText = y;
-                yearSelect.appendChild(opt);
-            }
-
-            for (let m = 1; m <= 12; m++) {
-                let opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m + '月';
-                monthSelect.appendChild(opt);
-            }
-
-            updateDays();
-
-            yearSelect.addEventListener('change', updateDays);
-            monthSelect.addEventListener('change', updateDays);
-        };
-
-        function updateDays() {
-            const year = parseInt(document.getElementById('birthYear').value) || 2000;
-            const month = parseInt(document.getElementById('birthMonth').value) || 1;
-            const daySelect = document.getElementById('birthDay');
-            const currentSelection = parseInt(daySelect.value);
-            const daysInMonth = new Date(year, month, 0).getDate();
-
-            daySelect.innerHTML = '<option value="" disabled selected>日 Day</option>';
-
-            for (let d = 1; d <= daysInMonth; d++) {
-                let opt = document.createElement('option');
-                opt.value = d;
-                opt.innerText = d;
-                if (d === currentSelection) {
-                    opt.selected = true;
-                }
-                daySelect.appendChild(opt);
-            }
-        }
-
-        // --- NEW ALGORITHM HELPER FUNCTIONS ---
-        function getZodiacInfo(m, d) {
-            const dateNum = m * 100 + d;
-            if ((dateNum >= 1222 || dateNum <= 119) || (dateNum >= 321 && dateNum <= 419)) return { name: (dateNum>=1222||dateNum<=119)?"摩羯座":"牡羊座", num: 1 };
-            if ((dateNum >= 120 && dateNum <= 218) || (dateNum >= 420 && dateNum <= 520)) return { name: (dateNum>=120&&dateNum<=218)?"水瓶座":"金牛座", num: 2 };
-            if ((dateNum >= 219 && dateNum <= 320) || (dateNum >= 521 && dateNum <= 621)) return { name: (dateNum>=219&&dateNum<=320)?"雙魚座":"雙子座", num: 3 };
-            if (dateNum >= 622 && dateNum <= 722) return { name: "巨蟹座", num: 4 };
-            if (dateNum >= 723 && dateNum <= 822) return { name: "獅子座", num: 5 };
-            if (dateNum >= 823 && dateNum <= 922) return { name: "處女座", num: 6 };
-            if (dateNum >= 923 && dateNum <= 1023) return { name: "天秤座", num: 7 };
-            if (dateNum >= 1024 && dateNum <= 1122) return { name: "天蠍座", num: 8 };
-            if (dateNum >= 1123 && dateNum <= 1221) return { name: "射手座", num: 9 };
-            return { name: "未知", num: 0 };
-        }
-
-        // --- 1. 生命靈數主修數 & 大師數 ---
         const lifePathData = {
             1: { title: "開創者 (The Leader)", desc: "您擁有強大的獨立性與開創精神，適合擔任決策者。但需注意「固執」與「堅持」的區別，學習包容不同聲音，找到團隊平衡。" },
             2: { title: "協調者 (The Mediator)", desc: "您富有同理心，擅長建立情感連結，是極佳的合作夥伴。挑戰在於過度在意他人感受而失去自我立場，需學習劃定界線。" },
@@ -482,55 +514,76 @@
             7: { title: "思考者 (The Analyst)", desc: "您喜歡探究真理，直覺敏銳，對於無法證明的事物抱持懷疑。適合透過獨處與冥想來發展內在深層思維。" },
             8: { title: "實踐家 (The Executive)", desc: "您對目標有極高執行力，重視豐盛與權力。天生具備商業頭腦，但需注意避免因目的性過強而忽略原則，相信自我價值。" },
             9: { title: "人道主義者 (The Humanitarian)", desc: "您擁有博愛精神與智慧，樂於奉獻。若能無私助人，往往能獲得意想不到的回報。需在夢想與現實間找到平衡。" },
-            
-            // --- 大師數 (Master Numbers) ---
             11: { title: "啟蒙大師 (The Illuminator)", desc: "【11/2】您擁有非凡的靈覺力與洞察力，是天生的精神領袖。直覺強烈，能連結高頻訊息。挑戰在於神經系統較敏感，需學習讓內在平靜，信任自己的直覺。" },
             22: { title: "築夢大師 (The Master Builder)", desc: "【22/4】您結合了理想主義與務實行動力，擁有將宏大夢想顯化為現實的能力。挑戰在於避免過度承擔責任，學習如何在物質世界中平衡身心。" },
             33: { title: "療癒大師 (The Master Teacher)", desc: "【33/6】您充滿無條件的愛與慈悲，是充滿智慧的靈魂導師。天生具有強大的療癒力，但也容易過度犧牲。挑戰在於先照顧好自己，才能用愛滋養世界。" }
         };
 
-        // --- 2. 靈數對應水晶 (全面擴充) ---
+        const flowMonthData = {
+            1: { keyword: "播種期", desc: "採取行動的最佳時機。適合「紅瑪瑙」或「金運石」，增強開創勇氣。" },
+            2: { keyword: "蟄伏期", desc: "適合細膩溝通。推薦「藍珀」或「紫鋰輝」，讓情緒保持柔和穩定。" },
+            3: { keyword: "萌芽期", desc: "社交能量活躍。適合「黃水晶」或「鈦晶」，展現光芒，多參加聚會。" },
+            4: { keyword: "紮根期", desc: "專注與務實。推薦「水草瑪瑙」或「阿拉善」，釋放壓力並鞏固成果。" },
+            5: { keyword: "變化期", desc: "意想不到的機會。適合「海藍寶」或「天河石」，保持順暢溝通。" },
+            6: { keyword: "關懷期", desc: "回歸情感與愛。推薦「草莓晶」或「紅紋石」，療癒關係，化解隔閡。" },
+            7: { keyword: "省思期", desc: "適合獨處進修。推薦「紫龍晶」或「拉長石」，提升內在智慧。" },
+            8: { keyword: "收穫期", desc: "成果顯化。適合「方解晶鎮」或「彼得石」，承接豐盛能量，肯定自我價值。" },
+            9: { keyword: "完結期", desc: "清理與放下。推薦「透石膏」或「白水晶」，淨化並迎接新循環。" }
+        };
+
+        const dailyQuotes = {
+            1: "【流日1】今天的能量適合「開始」。別讓猶豫阻擋你的腳步，相信直覺，勇敢為自己踏出第一步。",
+            2: "【流日2】今天的能量柔軟而細膩。若感到情緒波動，請給自己一個擁抱，溫柔其實是種強大的力量。",
+            3: "【流日3】今天的能量充滿創意與孩子氣。別把話悶在心裡，試著表達真實的感受，快樂會隨之而來。",
+            4: "【流日4】今天的能量需要「穩定」。即使外在環境變動，請記得你的內心依然可以像大樹一樣扎根安穩。",
+            5: "【流日5】今天的能量自由奔放。若計畫趕不上變化，不如享受這場冒險，驚喜往往藏在未知的轉彎處。",
+            6: "【流日6】今天的能量充滿愛與責任。在照顧別人的同時，別忘了留一杯茶的時間給自己，你也很重要。",
+            7: "【流日7】今天的能量適合沉澱。遠離喧囂，給大腦一點空白，你尋找的答案往往會在靜心中浮現。",
+            8: "【流日8】今天的能量豐盛強大。請相信自己的價值，你有能力顯化心中渴望的富足與成就。",
+            9: "【流日9】今天的能量適合「清理」。放下那些不再服務於你的情緒與舊物，騰出空間，迎接新的美好。"
+        };
+
         const numberCrystals = {
             1: { 
                 desc: "增強領導力與行動力", 
-                stones: ["紅瑪瑙", "金運石", "硃砂", "紅膠花", "鈦赫茲", "火焰石", "石榴石", "彼得石", "黑髮晶", "太陽石", "紅髮晶", "銅鈦晶", "黑膽石", "余太翠", "金草莓超七", "黑金超七"] 
+                stones: ["紅瑪瑙", "金運石", "硃砂", "紅膠花", "鈦赫茲", "火焰石", "石榴石", "彼得石", "黑髮晶", "太陽石", "紅髮晶", "銅鈦晶", "黑膽石", "余太翠", "金草莓超七", "黑金超七", "金草莓太陽石", "紅玉髓", "黑閃靈共生紅泥骸骨", "珊瑚"] 
             },
             2: { 
                 desc: "平衡情緒與自我界線", 
-                stones: ["鹽源瑪瑙", "藍珀", "紫鋰輝", "紅紋石", "異極礦", "透石膏", "糖果螢石", "馬島月光", "孔雀石", "摩根石", "櫻花瑪瑙", "粉雷姆利亞", "橙月光", "藍月光", "灰月光", "黑金超七"] 
+                stones: ["鹽源瑪瑙", "藍珀", "紫鋰輝", "紅紋石", "異極礦", "透石膏", "糖果螢石", "馬島月光", "孔雀石", "摩根石", "櫻花瑪瑙", "粉雷姆利亞", "橙月光", "藍月光", "灰月光", "黑金超七", "紅玉髓", "女王貝", "蛋白石"] 
             },
             3: { 
                 desc: "激發創意與快樂", 
-                stones: ["黃水晶", "鈦晶", "黃膠花", "黃方解", "黃銅礦", "黃金雲母螢石", "彼得石", "火焰石", "金髮晶", "橙月光", "托帕石", "黑金超七"] 
+                stones: ["黃水晶", "鈦晶", "黃膠花", "黃方解", "黃銅礦", "黃金雲母螢石", "彼得石", "火焰石", "金髮晶", "橙月光", "托帕石", "黑金超七", "黃銅礦", "黃金雲母螢石", "金草莓太陽石", "膠花閃靈", "綠橄欖石", "紫黃晶", "蛋白石"] 
             },
             4: { 
                 desc: "建立安全感與彈性", 
-                stones: ["水草瑪瑙", "綠草莓晶", "兔毛螢石-綠", "綠龍晶", "葡萄石", "阿拉善", "余太翠", "彩螢石", "印度沸石", "櫻花瑪瑙", "黑膽石", "石榴石", "綠幽靈", "金草莓超七", "黑金超七"] 
+                stones: ["水草瑪瑙", "綠草莓晶", "兔毛螢石-綠", "綠龍晶", "葡萄石", "阿拉善", "余太翠", "彩螢石", "印度沸石", "櫻花瑪瑙", "黑膽石", "石榴石", "綠幽靈", "金草莓超七", "黑金超七", "岫玉", "海螺化石", "綠橄欖石", "綠月光"] 
             },
             5: { 
                 desc: "穩定情緒與溝通", 
-                stones: ["海藍寶", "藍紋瑪瑙", "藍玉隨", "天河石", "兔毛螢石-藍", "拉利瑪", "異極礦", "藍晶石", "青金石", "藍磷灰", "托帕石", "白松石", "黑金超七"] 
+                stones: ["海藍寶", "藍紋瑪瑙", "藍玉隨", "天河石", "兔毛螢石-藍", "拉利瑪", "異極礦", "藍晶石", "青金石", "藍磷灰", "托帕石", "白松石", "黑金超七", "藍幽靈", "矽孔雀石藍銅礦", "丹泉石", "藍紋石"] 
             },
             6: { 
                 desc: "療癒焦慮與關懷", 
-                stones: ["草莓晶", "鹽源瑪瑙", "紫鋰輝", "紅紋石", "藥王石", "葡萄石", "舒俱萊", "薔薇輝石", "摩根石", "櫻花瑪瑙", "粉雷姆利亞", "黑金超七"] 
+                stones: ["草莓晶", "鹽源瑪瑙", "紫鋰輝", "紅紋石", "藥王石", "葡萄石", "舒俱萊", "薔薇輝石", "摩根石", "櫻花瑪瑙", "粉雷姆利亞", "黑金超七", "粉紫超七", "女王貝", "綠月光", "鋰雲母"] 
             },
             7: { 
                 desc: "提升直覺與深層思考", 
-                stones: ["拉長石", "紫螢石", "紫龍晶", "舒俱萊", "預言石", "紫粉超七", "透石膏", "彩螢石", "氟鋁石膏", "紫鈦晶", "藍月光", "粉雷姆利亞", "巴西仙人掌紫晶", "黑金超七"] 
+                stones: ["拉長石", "紫螢石", "紫龍晶", "舒俱萊", "預言石", "粉紫超七", "透石膏", "彩螢石", "氟鋁石膏", "紫鈦晶", "藍月光", "粉雷姆利亞", "巴西仙人掌紫晶", "黑金超七", "矽孔雀石藍銅礦", "硨磲", "丹泉石", "紫黃晶", "薰衣草螢石", "藍紋石"] 
             },
             8: { 
                 desc: "顯化財富與抗壓", 
-                stones: ["金運石", "黃水晶", "鈦晶", "方解晶鎮", "千層黃方解", "黃銅礦", "彼得石", "黑金超七", "金髮晶", "年輪魚子舍利", "黑膽石", "灰月光", "異象軟糖爆球花", "金草莓超七"] 
+                stones: ["金運石", "黃水晶", "鈦晶", "方解晶鎮", "千層黃方解", "黃銅礦", "彼得石", "黑金超七", "金髮晶", "年輪魚子舍利", "黑膽石", "灰月光", "異象軟糖爆球花", "金草莓超七", "黃金雲母螢石", "灰兔毛", "黑銀鈦"] 
             },
             9: { 
                 desc: "慈悲與靈性連結", 
-                stones: ["白水晶", "異象軟糖爆球花晶鎮", "拉長石", "藥王石", "預言石", "透石膏", "舒俱萊", "印度沸石", "粉雷姆利亞", "巴西仙人掌紫晶", "年輪魚子舍利", "白松石", "黑金超七"] 
+                stones: ["白水晶", "異象軟糖爆球花晶鎮", "拉長石", "藥王石", "預言石", "透石膏", "舒俱萊", "印度沸石", "粉雷姆利亞", "巴西仙人掌紫晶", "年輪魚子舍利", "白松石", "黑金超七", "灰兔毛", "海螺化石", "黑閃靈共生紅泥骸骨", "膠花閃靈", "硨磲", "白月光", "薰衣草螢石", "鋰雲母"] 
             },
             // --- 大師數對應 ---
             11: {
                 desc: "直覺開發與靈性平衡",
-                stones: ["紫水晶", "紫螢石", "拉長石", "白水晶", "藍針白水晶", "天青石", "極光23", "巴西仙人掌紫晶"]
+                stones: ["紫水晶", "紫螢石", "拉長石", "白水晶", "藍針白水晶", "天青石", "極光23", "巴西仙人掌紫晶", "丹泉石"]
             },
             22: {
                 desc: "夢想顯化與務實築基",
@@ -542,7 +595,6 @@
             }
         };
 
-        // --- 3. 特殊水晶組合 (更新高階款) ---
         const specialCrystals = [
             { 
                 name: "黑金超七", 
@@ -551,10 +603,16 @@
                 desc: "【權威顯化與全能防禦】黑金超七含有豐富的黑電氣石與金紅石。能補足行動力(1)、防禦力(7)、物質顯化(8)與事業格局(9)。" 
             },
             { 
-                name: "彩超七 / 紫粉超七", 
+                name: "彩超七", 
                 target: "all", 
                 covers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-                desc: "【高頻揚升】超七家族系列，能量全面且強大。紫粉偏人緣靈性，彩超七則全方位補給。" 
+                desc: "【全方位揚升】匯聚七種礦物能量，對應人體七大脈輪。能平衡身心、提升整體運勢，是全能型的能量補給。" 
+            },
+            {
+                name: "粉紫超七",
+                target: "specific",
+                covers: [6, 7],
+                desc: "【人緣與靈性之光】粉紫超七以紫水晶與纖鐵礦為主，散發溫柔而高頻的紫色光芒。能對應心輪(6)與頂輪(7)，不僅能療癒情感創傷、招來正緣桃花，更能開啟靈性直覺，幫助你在人際關係中保持清明與慈悲，是提升貴人運與第六感的絕佳選擇。"
             },
             { 
                 name: "金草莓超七", 
@@ -581,10 +639,16 @@
                 desc: "【智慧與財富】結合紫色的靈性智慧(7)與金色的財富能量(8)，適合需要運用直覺與智慧來創造財富的人。" 
             },
             { 
-                name: "預言石 / 黃銅礦", 
+                name: "預言石", 
                 target: "specific", 
-                covers: [7, 8, 9], 
-                desc: "【靈性顯化】預言石能開啟高階視覺與靈性(7,9)，黃銅礦則能將靈性洞見顯化為物質財富(8)。" 
+                covers: [7, 9], 
+                desc: "【靈性預言】能開啟頂輪與海底輪，幫助連結高維度訊息，並將靈感落實於生活(7,9)。" 
+            },
+            {
+                name: "黃銅礦",
+                target: "specific",
+                covers: [3, 8],
+                desc: "【財富顯化】金色礦石。能增強自信(3)，將靈性洞見顯化為物質財富(8)。"
             },
             { 
                 name: "彼得石 (Pietersite)", 
@@ -600,165 +664,215 @@
             }
         ];
 
-        // --- 4. 完整水晶數據庫 (大幅擴充) ---
         const crystalDB = [
-            // 原有保留...
-            { name: "粉晶", element: "火", numbers: [2, 4, 6, 9], effect: "【愛情與療癒】柔軟心房，增強愛與包容，平衡過度付出。" },
-            { name: "海藍寶共生方解石", element: "水/金", numbers: [5, 7], effect: "【溝通與淨化】強力清理喉輪阻塞，幫助表達真實情感，化解深層恐懼。" },
-            { name: "阿魯沙", element: "火", numbers: [1, 3], effect: "【正向與療癒】擁有太陽石的正面能量與綠柱石的療癒力，驅散負面。" },
-            { name: "極光23", element: "全元素", numbers: [1,2,3,4,5,6,7,8,9], effect: "【靈性覺醒】最古老水晶，含23種礦物。對應全脈輪，強力修復身心靈，提升靈性感知。" },
-            { name: "青金石", element: "水/木", numbers: [5, 7], effect: "【真理與洞察】對應眉心輪/喉輪。能平穩心態，增強洞察力，幫助看清真相與表達自我。" },
-            { name: "四季幽靈", element: "土/木", numbers: [4, 8], effect: "【願景與財富】對應心輪。內含四季景色，象徵圓滿。能穩固事業，招攬正財，落實夢想。" },
-            { name: "紫鈦晶", element: "火/金", numbers: [7, 8], effect: "【靈性之財】紫水晶與鈦晶共生。結合智慧與財富，適合需要運用直覺做決策的領導者。" },
-            { name: "茶晶/煙晶", element: "土/水", numbers: [4, 8], effect: "【穩重與過濾】對應海底輪。能過濾濁氣與病氣，使人情緒平穩，落實想法，增強行動持續力。" },
-            { name: "彩碧璽", element: "全元素", numbers: [2,3,4,5,6], effect: "【能量平衡】電氣石，能暢通血氣。玫瑰碧璽旺人緣，綠碧璽招正財，黃碧璽招富貴。" },
-            { name: "黑曜石", element: "水", numbers: [1, 8], effect: "【避邪檔煞】對應海底輪。強力吸收負能量，排除病氣，防小人，是最好的護身符。" },
-            { name: "金曜石", element: "金/水", numbers: [1, 8], effect: "【招財黑武士】黑曜石中帶金沙。除了避邪，更增強了招財與行動力，適合職場男性。" },
-            { name: "銀曜石", element: "水", numbers: [4, 7], effect: "【專注與驅魔】光澤如銀，能增強注意力與專注力，驅除心魔與執著，帶來平靜。" },
-            { name: "彩虹曜石", element: "水", numbers: [6, 9], effect: "【希望與療癒】黑底中透出彩虹光。能撫平情緒創傷，帶來希望與轉化的力量，溫柔的守護石。" },
-            { name: "閃靈", element: "光", numbers: [9], effect: "【淨化與夢境】雙尖水晶，能量通透。能淨化氣場，提升睡眠品質，增強夢境的清晰度。" },
-            { name: "白阿賽斯特萊", element: "光", numbers: [7, 9], effect: "【宇宙之光】極高頻率，無需淨化。能協助大腦與高維度意識連結，清理全身脈輪阻塞。" },
-            { name: "黃阿賽斯特萊", element: "金/火", numbers: [3, 8], effect: "【顯化之光】對應太陽輪。能將高頻能量注入物質實相，加速願望顯化，增強意志力與財運。" },
-            { name: "龍宮舍利", element: "土/光", numbers: [9], effect: "【正氣磁場】產自泰國龍宮洞。具有強大正磁場，能調整身體氣場，避邪擋煞，安定心神。" },
-            { name: "財寶舍利", element: "土/金", numbers: [8], effect: "【聚氣招財】龍宮舍利的一種。專注於聚集財氣與福報，適合需要提升事業運與財運的人。" },
-            { name: "馬島月光", element: "水", numbers: [2, 6], effect: "【溫柔直覺】產自馬達加斯加。光澤更強，能提升直覺力，平撫焦慮，帶來溫柔的守護能量。" },
-            { name: "月光石", element: "水", numbers: [2, 6], effect: "【戀人之石】對應頂輪/心輪。能平伏煩躁心情，潤滑感情，提升女性魅力與睡眠品質。" },
-            { name: "彩兔毛", element: "火/土", numbers: [1, 3], effect: "【活力與自信】包含紅、黃、白等髮晶。能增強海底輪能量，提升氣色、活力與自信心。" },
-            { name: "紅虎眼石", element: "火", numbers: [1], effect: "【熱情與行動】增強爆發力與熱情，克服膽怯，適合需要大量體力與行動力的人。" },
-            { name: "黃虎眼石", element: "土/金", numbers: [3, 8], effect: "【勇氣與財富】貓眼效應強。能激發勇氣，堅定信念，帶來財富與事業上的突破。" },
-            { name: "藍虎眼石", element: "水", numbers: [5], effect: "【冷靜與洞悉】能平復激動情緒，增強洞悉力與判斷力，看清事物本質。" },
-            { name: "三色虎眼石", element: "全元素", numbers: [1, 3, 5, 8], effect: "【全方位護佑】集合紅、黃、藍虎眼功效。能平衡能量，帶來勇氣、財富與冷靜的判斷力。" },
-            { name: "天青石", element: "水/風", numbers: [5, 7], effect: "【天使之石】對應喉輪/頂輪。能量極其平和，能連結天使能量，帶來深層寧靜與清晰溝通。" },
-            { name: "粉澳寶", element: "火/水", numbers: [2, 6], effect: "【天使肌膚】對應心輪。溫柔的粉色能量，能療癒情感創傷，散發柔和魅力，招來好人緣。" },
-            { name: "藍晶石", element: "水", numbers: [5, 7], effect: "【協調與表達】絕佳的協調石。能自動平衡脈輪，不累積負能量。助於表達真實自我，化解溝通障礙。" },
-            { name: "紫水晶", element: "火/水", numbers: [1, 7, 9], effect: "【智慧與貴人】對應頂輪。能融洽人際連結，釋放掌控欲(1)，提升靈性意識(7)，並擴大慈愛影響力(9)。" },
-            { name: "紫晶鎮", element: "火/土", numbers: [7, 9], effect: "【鎮宅與聚氣】紫晶鎮如同小型能量發電站，能穩定空間磁場，提升靈性智慧(7)，並凝聚貴人運與正氣(9)。" },
-            { name: "藍針白水晶", element: "水/光", numbers: [5, 7, 9], effect: "【天使羽毛】白水晶中隱含藍色羽毛狀包裹體。能同時淨化(9)並開啟喉輪(5)與眉心輪(7)，帶來平靜與高維度的指引。" },
-            { name: "天鐵", element: "金", numbers: [1, 8, 9], effect: "【宇宙能量】來自外太空的隕石，能量極強大。能打通七脈輪，增強行動力(1)，招財避邪(8)，並提升靈性連結(9)。" },
-            { name: "氟鋁石膏", element: "光/風", numbers: [7, 9], effect: "【高頻淨化】非常稀有的高頻礦石，能快速清理氣場，提升靈性頻率，幫助冥想與連結高我(7, 9)。" },
-            { name: "孔雀石", element: "木/土", numbers: [2, 4, 6], effect: "【轉化與保護】對應心輪。能吸收負能量與幅射，釋放情緒創傷(2, 6)，帶來轉化的力量與保護(4)。" },
-            { name: "堇青石", element: "水", numbers: [7], effect: "【指引之石】對應眉心輪。能幫助看清真相，提升直覺與洞察力(7)，並有助於戒除成癮習慣，找回人生方向。" },
-            { name: "黑髮晶", element: "水", numbers: [1, 8], effect: "【領袖與避邪】黑髮晶包含黑色電氣石，能量強勁。能消除負能量，增強領袖魅力(1)，避邪擋煞並招偏財(8)。" },
-            { name: "太陽石", element: "火", numbers: [1, 3], effect: "【活力與領導】對應太陽神經叢。帶來如太陽般的正面能量，驅散憂鬱(3)，增強領袖魅力與自信(1)。" },
-            { name: "薔薇輝石", element: "火/土", numbers: [6, 9], effect: "【救贖之石】對應心輪。修復情感創傷，調和親密關係(6)，協助展現無私的愛(9)，從失戀或家庭問題中走出。" },
-            { name: "魚眼石", element: "水/靈", numbers: [7, 9], effect: "【靈性之眼】高含水量的靈性寶石。能打通眉心輪(7)與頂輪(9)，提升直覺與靈視力，幫助放鬆與冥想。" },
-            { name: "紅兔毛", element: "火", numbers: [1, 3], effect: "【青春活力】紅色網狀金紅石，對應海底輪。能增強活力、自信與氣色(1)，調整女性生理機能，帶來如青春般的熱情(3)。" },
-            { name: "黃螢石", element: "土/金", numbers: [3, 8], effect: "【創意與合作】對應太陽輪。能提升創造力與直覺(3)，增強團體合作與人際溝通，幫助招財(8)。" },
-            { name: "綠螢石", element: "木", numbers: [4], effect: "【情緒穩定】對應心輪。能平穩情緒，吸收負能量，帶來身心的穩定與平衡(4)，幫助思緒清晰。" },
-            { name: "糖果螢石", element: "全元素", numbers: [2, 6], effect: "【繽紛療癒】多色共生，色彩柔和如糖果。能療癒內在小孩，帶來愉悅心情與親和力(2, 6)。" },
-            { name: "羽毛螢石 (紫綠/紫藍綠)", element: "風/靈", numbers: [7, 9], effect: "【靈性羽翼】紫綠/紫藍綠色系。擁有如羽毛般美麗紋路。能清理氣場負擔，提升靈性能量(7)，連結高維度智慧(9)。" },
-            { name: "水膽水晶", element: "水/土", numbers: [5, 8], effect: "【流動與財富】水晶中包覆千萬年前的純水。象徵財源滾滾(8)，能增強適應力與靈活度(5)，緩解壓力。" },
-            { name: "金髮晶", element: "金/火", numbers: [3, 8], effect: "【吉祥富貴】被稱為「維納斯之髮」。能增強自信與決斷力(3)，招攬正財與偏財(8)，氣場強大。" },
-            { name: "銅鈦晶", element: "火/金", numbers: [1, 8], effect: "【領袖氣場】含有銅金色的髮絲，能量剛勁。能提升膽識與衝勁(1)，增強領導魅力，並具有強大的辟邪招財功效(8)。" },
-            { name: "紅髮晶", element: "火", numbers: [1, 3], effect: "【青春活力】對應海底輪。能增強生命力與熱情(1)，調整氣色，增進自信與個人魅力(3)，適合女性佩戴。" },
-            { name: "印度沸石", element: "土", numbers: [4, 9], effect: "【強力吸負】被譽為吸毒石。能強力吸附空間與氣場中的負能量、病氣與晦氣，是極佳的風水淨化石。" },
-            { name: "黑膽石", element: "土/水", numbers: [1, 4, 8], effect: "【接地與健康】對應海底輪。能增強體力，促進血液循環，幫助接地氣，消除恐懼，使思緒清晰。" },
-            { name: "年輪魚子舍利", element: "土/金", numbers: [8, 9], effect: "【聚福與化煞】稀有舍利礦。具有強大的正能量磁場，能化解煞氣(9)，聚集福氣與財氣(8)，護身保平安。" },
-            { name: "托帕石", element: "水/金", numbers: [3, 5], effect: "【友誼與溝通】又稱黃玉。藍色托帕石助溝通(5)，黃色/帝王托帕石招財與自信(3)。象徵和平與友誼。" },
-            { name: "粉雷姆利亞", element: "光/火", numbers: [2, 6, 7, 9], effect: "【古文明智慧】來自雷姆利亞文明的連結。粉色光能療癒心輪(2,6)，條碼紋路儲存遠古智慧，助靈性開啟(7,9)。" },
-            { name: "摩根石", element: "火", numbers: [2, 6], effect: "【神聖之愛】粉色綠柱石，對應心輪。能帶來溫和而強大的愛之能量，療癒深層情感，改善人際關係(2,6)。" },
-            { name: "櫻花瑪瑙", element: "木/火", numbers: [2, 4, 6], effect: "【綻放與溫柔】瑪瑙中飄舞著如櫻花般的內含物。象徵希望與成長(4)，能溫柔地療癒內在，提升女性魅力(2,6)。" },
-            { name: "藍磷灰", element: "水", numbers: [5], effect: "【知性與表達】對應喉輪。能激發靈感，增強表達能力(5)，對於需要大量溝通或學習的人非常有幫助。" },
-            { name: "白松石", element: "土/水", numbers: [5, 9], effect: "【平靜與安眠】對應頂輪。能平撫憤怒與焦慮，帶來深層平靜，改善睡眠品質(9)，亦助於冷靜溝通(5)。" },
-            { name: "巴西仙人掌紫晶", element: "火/光", numbers: [7, 9], effect: "【集體意識】精靈水晶的一種。無數小晶尖覆蓋在主晶體上，象徵團結與和諧(9)，能量細緻高頻，助冥想(7)。" },
-            { name: "橙月光", element: "水/土", numbers: [2, 3], effect: "【溫暖與情緒】對應臍輪。能平穩情緒波動(2)，帶來溫暖的安全感，緩解焦慮，激發創造力(3)。" },
-            { name: "藍月光", element: "水", numbers: [2, 7], effect: "【直覺與神祕】最高等級的月光石。散發藍色暈彩，能增強直覺與靈通力(7)，連結陰性女神能量，極具守護力(2)。" },
-            { name: "灰月光", element: "水", numbers: [2, 8], effect: "【洞察與保護】又稱拉長石月光。能幫助看清真相，保護氣場不被干擾(2)，適合在複雜環境中工作的人(8)。" },
-            { name: "黑碧璽", element: "水", numbers: [2, 4, 8], effect: "【強力防護】對應海底輪。能形成強大的能量保護罩(2)，釋放壓力維持身心穩定(4)，轉化負能量為正向動力(8)。" },
-            { name: "金草莓超七", element: "火/土", numbers: [1, 4, 8], effect: "【熱情與顯化】含有豐富纖鐵礦與雲母。火土能量強大，能增強行動力(1)，穩固根基(4)，並強力招財顯化(8)。" },
-            { name: "藍安力士", element: "水/風", numbers: [5, 9], effect: "【溝通與勇氣】藍透閃石，能量溫柔堅定。助於提升表達能力(5)，帶來勇氣與靈性平靜(9)。" },
-            { name: "藍線石", element: "水/木", numbers: [4, 5, 7], effect: "【秩序與洞察】被稱為「秩序之石」。提升自律與組織力(4)，增強溝通(5)與洞察力(7)，適合需要高度專注的人。" },
-            { name: "黑金超七", element: "全元素", numbers: [1, 7, 8, 9], effect: "【權威顯化與全能防禦】黑金超七含有豐富的黑電氣石與金紅石。能補足行動力(1)、防禦力(7)、物質顯化(8)與事業格局(9)。" },
+            { name: "異極礦 (Hemimorphite)", element: "水", numbers: [2, 5], effect: "【情緒轉化】對應喉輪。能協助轉化沉重的負面情緒，帶來樂觀與喜悅的能量。對於容易陷入自責或憂鬱的人(2)，能提供強大的情緒支持與溝通勇氣(5)。", wear: "左手 (平衡情緒)", place: "客廳、溝通場域" },
+            { name: "黃方解 (Yellow Calcite)", element: "土/金", numbers: [3, 8], effect: "【繁榮與自信】黃色對應太陽神經叢。能強力消除自我懷疑，增強自信心(3)。具有聚財與繁榮的能量，適合需要拓展事業與財富的人(8)。", wear: "左手 (招財/自信) 或 擺件", place: "財位、辦公桌" },
+            { name: "黃膠花 (Yellow Hematoid Quartz)", element: "土/金", numbers: [3, 8], effect: "【偏財與貴人】水晶內部共生黃色礦物質，形成美麗景致。主招偏財與貴人運，增強企圖心與行動力，適合創業者與業務人員。", wear: "左手 (招財)", place: "財位、收銀台" },
+            { name: "黃水晶 (Citrine)", element: "土/金", numbers: [3, 8], effect: "【財富之石】對應太陽神經叢。溫和的黃光能注入自信與快樂(3)，是著名的聚財水晶，能帶來意想不到的財富機會(8)，並消除恐懼。", wear: "左手 (招財/快樂)", place: "財位、客廳" },
+            { name: "藍玉隨 (Blue Chalcedony)", element: "水", numbers: [5], effect: "【避邪與溝通】古老的護身符。對應喉輪，能協助順暢溝通，化解喉嚨的能量阻塞。同時具有阻擋負能量與防小人的功效。", wear: "右手 (避邪) 或 左手 (溝通)", place: "隨身攜帶、書房" },
+            { name: "天河石 (Amazonite)", element: "水/木", numbers: [4, 5], effect: "【希望之石】藍綠色的幸運石。能帶來幸運與貴人，幫助人在轉折點看見希望。對應喉輪與心輪，增強表達力(5)並療癒內心(4)。", wear: "左手 (幸運/溝通)", place: "賭桌、辦公桌" },
+            { name: "火焰石 (Yooperlite)", element: "火", numbers: [1, 3], effect: "【能量爆發】含有螢光方鈉石，紫外線下會發出橘紅光芒。能點燃內心火焰，增強自信與行動力(1)，釋放深層恐懼，帶來突破困境的勇氣(3)。", wear: "擺件 / 手把件", place: "客廳、工作室" },
+            { name: "黃銅礦 (Chalcopyrite)", element: "金", numbers: [3, 8], effect: "【財富顯化】金色的金屬礦石。能增強自我價值感(3)，協助將靈性洞見顯化為物質實相，是強大的顯化與招財礦石(8)。", wear: "擺件 / 原礦", place: "財位、金庫" },
+            { name: "葡萄石 (Prehnite)", element: "木", numbers: [4, 6], effect: "【指引之石】淡綠色的溫柔能量。能療癒內心創傷(6)，為迷惘的人指引方向(4)。具有強大的修復力，能舒緩緊張與壓力，帶來平靜。", wear: "左手 (指引/療癒)", place: "臥室、辦公桌" },
+            { name: "舒俱萊 (Sugilite)", element: "火/水", numbers: [6, 7, 9], effect: "【治癒之石】稀有的紫色寶石。被譽為「治癒之石」，能清除深層負能量與因果業力。提升靈性智慧(7)，強化免疫系統，守護身心健康(6,9)。", wear: "左手 (療癒/靈性)", place: "療癒室、床頭" },
+            { name: "紅紋石 (Rhodochrosite)", element: "火", numbers: [2, 6], effect: "【愛神之石】美麗的玫瑰色澤。對應心輪，能療癒深層的情感創傷與失戀痛苦(6)。招來美好的姻緣與靈魂伴侶，讓愛再次流動(2)。", wear: "左手 (招真愛)", place: "臥室、桃花位" },
+            { name: "藍紋瑪瑙 (Blue Lace Agate)", element: "水", numbers: [5], effect: "【平靜與表達】優雅的藍色蕾絲紋路。對應喉輪，能平復焦躁的情緒，幫助冷靜思考。讓溝通變得溫和而有力，適合需要大量說話的人。", wear: "左手 (冷靜/表達)", place: "書房、臥室" },
+            { name: "粉晶 (Rose Quartz)", element: "火", numbers: [2, 4, 6, 9], effect: "【愛情與療癒】對應心輪。能柔軟心房(4)，增強愛與包容(6)，平衡過度付出(2)，並擴大博愛慈悲(9)。適合招桃花、療癒情感創傷。", wear: "左手 (招桃花/增人緣)", place: "臥室床頭、西南方桃花位" },
+            { name: "海藍寶共生方解石", element: "水/金", numbers: [5, 7], effect: "【溝通與淨化】結合海藍寶的溝通能量(5)與方解石的放大淨化(7)。能強力清理喉輪阻塞，幫助表達真實情感，化解深層恐懼與焦慮。", wear: "左手 (提升表達)", place: "書房、辦公桌" },
+            { name: "阿魯沙 (Arusha)", element: "火", numbers: [1, 3], effect: "【正向與療癒】結合金太陽與綠柱石的共生礦，擁有太陽石的正面能量(3)與領導力(1)，能驅散負面情緒，帶來積極光芒。", wear: "左手 (增強正能量)", place: "客廳、辦公室" },
+            { name: "極光23 (Auralite 23)", element: "全元素", numbers: [1,2,3,4,5,6,7,8,9], effect: "【靈性覺醒】地球上最古老的水晶之一，含有23種礦物元素。能對應全脈輪，強力淨化阻塞，喚醒靈性，是究極的能量補給站。", wear: "左手 (靈性接收) 或 右手 (排負)", place: "靜坐區、床頭" },
+            { name: "青金石 (Lapis Lazuli)", element: "水/木", numbers: [5, 7], effect: "【真理與洞察】對應眉心輪/喉輪。能平穩心態，增強洞察力，幫助看清真相與表達自我。", wear: "左手 (提升直覺)", place: "書房、工作桌" },
+            { name: "四季幽靈 (Garden Quartz)", element: "土/木", numbers: [4, 8], effect: "【願景與財富】包含春夏秋冬四季景色，能量豐足。能穩固事業基礎(4)，並招攬正財(8)，幫助事業步步高升。", wear: "左手 (招正財)", place: "辦公桌左前方、財位" },
+            { name: "紫鈦晶 (Amethyst Rutilated)", element: "火/金", numbers: [7, 8], effect: "【靈性之財】紫水晶與鈦晶共生。結合智慧與財富，適合需要運用直覺做決策的領導者。", wear: "左手 (招財/增智慧)", place: "辦公室、財位" },
+            { name: "茶晶/煙晶 (Smoky Quartz)", element: "土/水", numbers: [4, 8], effect: "【穩重與過濾】對應海底輪。能過濾濁氣與病氣，使人情緒平穩，落實想法，增強行動持續力。", wear: "右手 (排病氣/濁氣)", place: "床尾、電腦旁" },
+            { name: "彩碧璽 (Tourmaline)", element: "全元素", numbers: [2,3,4,5,6], effect: "【能量平衡】電氣石，能暢通血氣。玫瑰碧璽旺人緣，綠碧璽招正財，黃碧璽招富貴，藍碧璽助溝通。", wear: "左手 (吸收好運)", place: "客廳、臥室" },
+            { name: "黑曜石 (Obsidian)", element: "水", numbers: [1, 8], effect: "【避邪檔煞】對應海底輪。強力吸收負能量，排除病氣，防小人，是最好的護身符。", wear: "右手 (強力排負)", place: "玄關、門口、窗邊" },
+            { name: "金曜石 (Golden Obsidian)", element: "金/水", numbers: [1, 8], effect: "【招財黑武士】黑曜石中帶金沙。除了避邪，更增強了招財與行動力，適合職場男性。", wear: "右手 (避邪兼招財)", place: "辦公桌、玄關" },
+            { name: "銀曜石 (Silver Obsidian)", element: "水", numbers: [4, 7], effect: "【專注與驅魔】光澤如銀，能增強注意力與專注力，驅除心魔與執著，帶來平靜。", wear: "右手 (驅除雜念)", place: "書房、靜坐區" },
+            { name: "彩虹曜石 (Rainbow Obsidian)", element: "水", numbers: [6, 9], effect: "【希望與療癒】黑底中透出彩虹光。能撫平情緒創傷，帶來希望與轉化的力量，溫柔的守護石。", wear: "右手 (釋放創傷)", place: "臥室、療癒空間" },
+            { name: "閃靈 (Herkimer Diamond)", element: "光", numbers: [9], effect: "【淨化與夢境】雙尖水晶，能量通透。能淨化氣場，提升睡眠品質，增強夢境的清晰度。", wear: "左手 (提升頻率)", place: "枕頭下、隨身攜帶" },
+            { name: "白阿賽斯特萊 (White Azeztulite)", element: "光", numbers: [7, 9], effect: "【宇宙之光】極高頻率，無需淨化。能協助大腦與高維度意識連結，清理全身脈輪阻塞。", wear: "左手 (連結高我)", place: "靜坐區、頭頂上方" },
+            { name: "黃阿賽斯特萊 (Gold Azeztulite)", element: "金/火", numbers: [3, 8], effect: "【顯化之光】對應太陽輪。能將高頻能量注入物質實相，加速願望顯化，增強意志力與財運。", wear: "左手 (顯化願望)", place: "財位、辦公桌" },
+            { name: "龍宮舍利", element: "土/光", numbers: [9], effect: "【正氣磁場】產自泰國龍宮洞。具有強大正磁場，能調整身體氣場，避邪擋煞，安定心神。", wear: "右手 (避邪) 或 左手 (安神)", place: "玄關、神桌、客廳" },
+            { name: "財寶舍利", element: "土/金", numbers: [8], effect: "【聚氣招財】龍宮舍利的一種。專注於聚集財氣與福報，適合需要提升事業運與財運的人。", wear: "左手 (聚財)", place: "財位、金庫" },
+            { name: "馬島月光 (Madagascar Moonstone)", element: "水", numbers: [2, 6], effect: "【溫柔直覺】產自馬達加斯加。光澤更強，能提升直覺力，平撫焦慮，帶來溫柔的守護能量。", wear: "左手 (柔化性情)", place: "臥室、化妝台" },
+            { name: "月光石 (Moonstone)", element: "水", numbers: [2, 6], effect: "【戀人之石】對應頂輪/心輪。能平伏煩躁心情，潤滑感情，提升女性魅力與睡眠品質。", wear: "左手 (招好人緣)", place: "枕頭下、床頭" },
+            { name: "彩兔毛 (Rabbit Hair Quartz)", element: "火/土", numbers: [1, 3], effect: "【活力與自信】包含紅、黃、白等髮晶。能增強海底輪能量，提升氣色、活力與自信心。", wear: "左手 (增強活力)", place: "更衣間、臥室" },
+            { name: "紅虎眼石", element: "火", numbers: [1], effect: "【熱情與行動】增強爆發力與熱情，克服膽怯，適合需要大量體力與行動力的人。", wear: "左手 (增行動力)", place: "健身房、辦公室" },
+            { name: "黃虎眼石", element: "土/金", numbers: [3, 8], effect: "【勇氣與財富】貓眼效應強。能激發勇氣，堅定信念，帶來財富與事業上的突破。", wear: "左手 (招財/勇氣)", place: "辦公桌、財位" },
+            { name: "藍虎眼石 (鷹眼石)", element: "水", numbers: [5], effect: "【冷靜與洞悉】能平復激動情緒，增強洞悉力與判斷力，看清事物本質。", wear: "左手 (冷靜思緒)", place: "書房、會議室" },
+            { name: "三色虎眼石", element: "全元素", numbers: [1, 3, 5, 8], effect: "【全方位護佑】集合紅、黃、藍虎眼功效。能平衡能量，帶來勇氣、財富與冷靜的判斷力。", wear: "左手 (綜合提升)", place: "辦公桌、車上(保平安)" },
+            { name: "天青石 (Celestite)", element: "水/風", numbers: [5, 7], effect: "【天使之石】對應喉輪/頂輪。能量極其平和，能連結天使能量，帶來深層寧靜與清晰溝通。", wear: "通常為擺件", place: "床頭(助眠)、溝通空間" },
+            { name: "粉澳寶 (Pink Opal)", element: "火/水", numbers: [2, 6], effect: "【天使肌膚】對應心輪。溫柔的粉色能量，能療癒情感創傷，散發柔和魅力，招來好人緣。", wear: "左手 (增親和力)", place: "臥室、梳妝台" },
+            { name: "藍晶石 (Kyanite)", element: "水", numbers: [5, 7], effect: "【協調與表達】絕佳的協調石。能自動平衡脈輪，不累積負能量。助於表達真實自我，化解溝通障礙。", wear: "左手 (協助溝通)", place: "書桌、溝通角落" },
+            { name: "紫水晶 (Amethyst)", element: "火/水", numbers: [1, 7, 9], effect: "【智慧與貴人】對應頂輪。能融洽人際連結，釋放掌控欲(1)，提升靈性意識(7)，並擴大慈愛影響力(9)。", wear: "左手 (增智慧/貴人)", place: "文昌位、床頭" },
+            { name: "紫晶鎮 (Amethyst Geode)", element: "火/土", numbers: [7, 9], effect: "【鎮宅與聚氣】紫晶鎮如同小型能量發電站，能穩定空間磁場，提升靈性智慧(7)，並凝聚貴人運與正氣(9)。", wear: "擺件", place: "財位(聚氣)、客廳、書房" },
+            { name: "藍針白水晶 (Blue Needle Quartz)", element: "水/光", numbers: [5, 7, 9], effect: "【天使羽毛】白水晶中隱含藍色羽毛狀包裹體。能同時淨化(9)並開啟喉輪(5)與眉心輪(7)，帶來平靜與高維度的指引。", wear: "左手 (接收訊息)", place: "靜坐區、書桌" },
+            { name: "天鐵 (Meteorite)", element: "金", numbers: [1, 8, 9], effect: "【宇宙能量】來自外太空的隕石，能量極強大。能打通七脈輪，增強行動力(1)，招財避邪(8)，並提升靈性連結(9)。", wear: "左手(充能)或右手(避邪)", place: "玄關、辦公桌" },
+            { name: "氟鋁石膏 (Creedite)", element: "光/風", numbers: [7, 9], effect: "【高頻淨化】非常稀有的高頻礦石，能快速清理氣場，提升靈性頻率，幫助冥想與連結高我(7, 9)。", wear: "少見配戴，多為擺件", place: "冥想室、療癒空間" },
+            { name: "孔雀石 (Malachite)", element: "木/土", numbers: [2, 4, 6], effect: "【轉化與保護】對應心輪。能吸收負能量與幅射，釋放情緒創傷(2, 6)，帶來轉化的力量與保護(4)。", wear: "左手 (保護心輪)", place: "電腦旁(擋輻射)、客廳" },
+            { name: "堇青石 (Iolite)", element: "水", numbers: [7], effect: "【指引之石】對應眉心輪。能幫助看清真相，提升直覺與洞察力(7)，並有助於戒除成癮習慣，找回人生方向。", wear: "左手 (冷靜判斷)", place: "書房、辦公桌" },
+            { name: "黑髮晶 (Black Rutilated Quartz)", element: "水", numbers: [1, 8], effect: "【領袖與避邪】黑髮晶包含黑色電氣石，能量強勁。能消除負能量，增強領袖魅力(1)，避邪擋煞並招偏財(8)。", wear: "右手 (避邪/排負)", place: "辦公室(防小人)" },
+            { name: "太陽石 (Sunstone)", element: "火", numbers: [1, 3], effect: "【活力與領導】對應太陽神經叢。帶來如太陽般的正面能量，驅散憂鬱(3)，增強領袖魅力與自信(1)。", wear: "左手 (增強正能量)", place: "客廳、辦公桌" },
+            { name: "薔薇輝石 (Rhodonite)", element: "火/土", numbers: [6, 9], effect: "【救贖之石】對應心輪。修復情感創傷，調和親密關係(6)，協助展現無私的愛(9)，從失戀或家庭問題中走出。", wear: "左手 (療癒情感)", place: "臥室、療癒空間" },
+            { name: "魚眼石 (Apophyllite)", element: "水/靈", numbers: [7, 9], effect: "【靈性之眼】高含水量的靈性寶石。能打通眉心輪(7)與頂輪(9)，提升直覺與靈視力，幫助放鬆與冥想。", wear: "多為擺件", place: "冥想室、床頭" },
+            { name: "紅兔毛 (Red Rabbit Hair)", element: "火", numbers: [1, 3], effect: "【青春活力】紅色網狀金紅石，對應海底輪。能增強活力、自信與氣色(1)，調整女性生理機能，帶來如青春般的熱情(3)。", wear: "左手 (氣色紅潤)", place: "臥室、更衣室" },
+            { name: "黃螢石", element: "土/金", numbers: [3, 8], effect: "【創意與合作】對應太陽輪。能提升創造力與直覺(3)，增強團體合作與人際溝通，幫助招財(8)。", wear: "左手 (聚財/創意)", place: "辦公室、會議室" },
+            { name: "綠螢石", element: "木", numbers: [4], effect: "【情緒穩定】對應心輪。能平穩情緒，吸收負能量，帶來身心的穩定與平衡(4)，幫助思緒清晰。", wear: "左手 (穩定情緒)", place: "書桌、工作台" },
+            { name: "糖果螢石", element: "全元素", numbers: [2, 6], effect: "【繽紛療癒】多色共生，色彩柔和如糖果。能療癒內在小孩，帶來愉悅心情與親和力(2, 6)。", wear: "左手 (心情愉悅)", place: "兒童房、客廳" },
+            { name: "羽毛螢石 (紫綠/紫藍綠)", element: "風/靈", numbers: [7, 9], effect: "【靈性羽翼】紫綠/紫藍綠色系。擁有如羽毛般美麗紋路。能清理氣場負擔，提升靈性能量(7)，連結高維度智慧(9)。", wear: "左手 (靈性提升)", place: "書房、冥想區" },
+            { name: "水膽水晶", element: "水/土", numbers: [5, 8], effect: "【流動與財富】水晶中包覆千萬年前的純水。象徵財源滾滾(8)，能增強適應力與靈活度(5)，緩解壓力。", wear: "擺件/手把件", place: "財位、辦公桌" },
+            { name: "金髮晶 (Gold Rutilated Quartz)", element: "金/火", numbers: [3, 8], effect: "【吉祥富貴】被稱為「維納斯之髮」。能增強自信與決斷力(3)，招攬正財與偏財(8)，氣場強大。", wear: "左手 (招正偏財)", place: "財位、金庫" },
+            { name: "銅鈦晶 (Copper Titanium)", element: "火/金", numbers: [1, 8], effect: "【領袖氣場】含有銅金色的髮絲，能量剛勁。能提升膽識與衝勁(1)，增強領導魅力，並具有強大的辟邪招財功效(8)。", wear: "左手 (增霸氣)", place: "辦公室主管桌" },
+            { name: "紅髮晶 (Red Rutilated Quartz)", element: "火", numbers: [1, 3], effect: "【青春活力】對應海底輪。能增強生命力與熱情(1)，調整氣色，增進自信與個人魅力(3)，適合女性佩戴。", wear: "左手 (增魅力)", place: "化妝台、臥室" },
+            { name: "印度沸石 (Zeolite)", element: "土", numbers: [4, 9], effect: "【強力吸負】被譽為吸毒石。能強力吸附空間與氣場中的負能量、病氣與晦氣，是極佳的風水淨化石。", wear: "擺件為主", place: "玄關、廁所旁、病床旁" },
+            { name: "黑膽石 (Hematite)", element: "土/水", numbers: [1, 4, 8], effect: "【接地與健康】對應海底輪。能增強體力，促進血液循環，幫助接地氣，消除恐懼，使思緒清晰。", wear: "右手 (排濁氣) 或 左手 (健康)", place: "床尾(助眠)、書桌" },
+            { name: "年輪魚子舍利", element: "土/金", numbers: [8, 9], effect: "【聚福與化煞】稀有舍利礦。具有強大的正能量磁場，能化解煞氣(9)，聚集福氣與財氣(8)，護身保平安。", wear: "左手 (聚福) 或 右手 (擋煞)", place: "玄關、客廳" },
+            { name: "托帕石 (Topaz)", element: "水/金", numbers: [3, 5], effect: "【友誼與溝通】又稱黃玉。藍色托帕石助溝通(5)，黃色/帝王托帕石招財與自信(3)。象徵和平與友誼。", wear: "左手 (招貴人)", place: "客廳、交誼廳" },
+            { name: "粉雷姆利亞 (Pink Lemurian)", element: "光/火", numbers: [2, 6, 7, 9], effect: "【古文明智慧】來自雷姆利亞文明的連結。粉色光能療癒心輪(2,6)，條碼紋路儲存遠古智慧，助靈性開啟(7,9)。", wear: "左手 (下載訊息)", place: "冥想室、祭壇" },
+            { name: "摩根石 (Morganite)", element: "火", numbers: [2, 6], effect: "【神聖之愛】粉色綠柱石，對應心輪。能帶來溫和而強大的愛之能量，療癒深層情感，改善人際關係(2,6)。", wear: "左手 (招好姻緣)", place: "臥室、桃花位" },
+            { name: "櫻花瑪瑙 (Cherry Blossom Agate)", element: "木/火", numbers: [2, 4, 6], effect: "【綻放與溫柔】瑪瑙中飄舞著如櫻花般的內含物。象徵希望與成長(4)，能溫柔地療癒內在，提升女性魅力(2,6)。", wear: "左手 (提升氣質)", place: "梳妝台、辦公桌" },
+            { name: "藍磷灰 (Blue Apatite)", element: "水", numbers: [5], effect: "【知性與表達】對應喉輪。能激發靈感，增強表達能力(5)，對於需要大量溝通或學習的人非常有幫助。", wear: "左手 (增強學習)", place: "書房、圖書室" },
+            { name: "白松石 (White Turquoise/Howlite)", element: "土/水", numbers: [5, 9], effect: "【平靜與安眠】對應頂輪。能平撫憤怒與焦慮，帶來深層平靜，改善睡眠品質(9)，亦助於冷靜溝通(5)。", wear: "左手 (平靜) 或 枕下", place: "枕頭下、床頭" },
+            { name: "巴西仙人掌紫晶 (Cactus Amethyst)", element: "火/光", numbers: [7, 9], effect: "【集體意識】精靈水晶的一種。無數小晶尖覆蓋在主晶體上，象徵團結與和諧(9)，能量細緻高頻，助冥想(7)。", wear: "擺件", place: "客廳、團隊辦公室" },
+            { name: "橙月光 (Orange Moonstone)", element: "水/土", numbers: [2, 3], effect: "【溫暖與情緒】對應臍輪。能平穩情緒波動(2)，帶來溫暖的安全感，緩解焦慮，激發創造力(3)。", wear: "左手 (溫暖內在)", place: "臥室、工作室" },
+            { name: "藍月光 (Blue Moonstone)", element: "水", numbers: [2, 7], effect: "【直覺與神祕】最高等級的月光石。散發藍色暈彩，能增強直覺與靈通力(7)，連結陰性女神能量，極具守護力(2)。", wear: "左手 (增靈感)", place: "枕頭下、冥想區" },
+            { name: "灰月光 (Grey Moonstone)", element: "水", numbers: [2, 8], effect: "【洞察與保護】又稱拉長石月光。能幫助看清真相，保護氣場不被干擾(2)，適合在複雜環境中工作的人(8)。", wear: "右手 (防干擾) 或 左手 (洞察)", place: "辦公室" },
+            { name: "黑碧璽 (Black Tourmaline)", element: "水", numbers: [2, 4, 8], effect: "【強力防護】對應海底輪。能形成強大的能量保護罩(2)，釋放壓力維持身心穩定(4)，轉化負能量為正向動力(8)。", wear: "右手 (強力避邪)", place: "門口、窗台、牆角" },
+            { name: "金草莓超七 (Red Super Seven)", element: "火/土", numbers: [1, 4, 8], effect: "【熱情與顯化】含有豐富纖鐵礦與雲母。火土能量強大，能增強行動力(1)，穩固根基(4)，並強力招財顯化(8)。", wear: "左手 (增強動力)", place: "辦公桌、財位" },
+            { name: "藍安力士 (Blue Amphibole)", element: "水/風", numbers: [5, 9], effect: "【溝通與勇氣】藍透閃石，能量溫柔堅定。助於提升表達能力(5)，帶來勇氣與靈性平靜(9)。", wear: "左手 (勇氣表達)", place: "書桌、會議室" },
+            { name: "藍線石 (Dumortierite)", element: "水/木", numbers: [4, 5, 7], effect: "【秩序與洞察】被稱為「秩序之石」。提升自律與組織力(4)，增強溝通(5)與洞察力(7)，適合需要高度專注的人。", wear: "左手 (自律專注)", place: "書房、學生書桌" },
+            { name: "黑金超七", element: "全元素", numbers: [1, 7, 8, 9], effect: "【權威顯化與全能防禦】黑金超七含有豐富的黑電氣石與金紅石。能補足行動力(1)、防禦力(7)、物質顯化(8)與事業格局(9)。", wear: "左手(顯化)或右手(防禦)", place: "辦公桌(顯化)、玄關(擋煞)" },
+            { name: "粉紫超七", element: "火/光", numbers: [6, 7], effect: "【人緣與靈性之光】粉紫超七以紫水晶與纖鐵礦為主，散發溫柔而高頻的紫色光芒。能對應心輪(6)與頂輪(7)，不僅能療癒情感創傷、招來正緣桃花，更能開啟靈性直覺，幫助你在人際關係中保持清明與慈悲，是提升貴人運與第六感的絕佳選擇。", wear: "左手 (招桃花/增靈感)", place: "臥室、冥想室" },
+            { name: "拉利瑪 (Larimar)", element: "水/火", numbers: [5, 6], effect: "【海豚之石・靈魂的呼吸】來自多明尼加的珍稀寶石，對應喉輪與心輪。如海洋般的藍色能量能瞬間平撫焦躁與怒氣，療癒內在深層的情感創傷(6)。同時協助您真實地表達自我(5)，化解溝通隔閡，找回靈魂的平靜與自由。", wear: "左手 (平靜/溝通)", place: "臥室、書房、冥想角落" },
+            { name: "預言石", element: "土", numbers: [7, 9], effect: "【靈性預言】能開啟頂輪與海底輪，幫助連結高維度訊息，並將靈感落實於生活。提升預知夢與直覺力。", wear: "擺件", place: "靜坐區、辦公桌" },
+            { name: "黃銅礦", element: "金", numbers: [3, 8], effect: "【財富顯化】金色礦石。能增強自信與自我價值(3)，將靈性洞見顯化為物質財富(8)，是強大的豐盛之石。", wear: "擺件", place: "財位" },
+            { name: "黃金雲母螢石", element: "土/金", numbers: [3, 8], effect: "【財富與自信的黃金之光】稀有的共生礦，螢石中含有閃耀的金黃色雲母片。對應太陽神經叢(3)，能強力清理深層的自我懷疑，帶來如黃金般的自信與勇氣。同時也是極佳的招財水晶(8)，能為事業帶來豐盛的機會與貴人。", wear: "左手 (招財/自信)", place: "辦公桌、財位" },
+            { name: "藍幽靈", element: "水/木", numbers: [5], effect: "【勇氣與溝通】對應喉輪。增強表達能力，消除內心恐懼與焦慮，帶來平靜與勇氣。", wear: "左手 (表達/平靜)", place: "書房、辦公桌" },
+            { name: "灰兔毛", element: "水", numbers: [8, 9], effect: "【釋放負能】如柔軟的兔毛般撫平焦慮。能消除疲勞，轉化負面能量，帶來身心輕盈。", wear: "右手 (排負)", place: "臥室、玄關" },
+            { name: "岫玉", element: "木", numbers: [4], effect: "【健康與守護】中國四大名玉之一。對應心輪，能量溫潤，能守護健康，帶來平安與穩定的富足。", wear: "左手 (健康/平安)", place: "客廳、長輩房" },
+            { name: "矽孔雀藍銅礦", element: "水/木", numbers: [5, 7], effect: "【智慧與直覺】結合孔雀石的療癒與藍銅礦的智慧。開啟第三眼，提升直覺力與溝通智慧。", wear: "左手 (智慧/直覺)", place: "冥想室、書房" },
+            { name: "金草莓太陽石", element: "火", numbers: [1, 3], effect: "【耀眼自信】結合太陽石的正面能量與金草莓的點點金光。提升自我價值，帶來如陽光般的自信與活力。", wear: "左手 (自信/活力)", place: "辦公桌、客廳" },
+            { name: "紅玉髓", element: "火", numbers: [1, 2], effect: "【生命力之石】對應臍輪與海底輪。增強生命力、創造力與勇氣，促進血液循環，帶來熱情。", wear: "左手 (活力/創造)", place: "工作室、臥室" },
+            { name: "海螺化石", element: "土", numbers: [4, 9], effect: "【古老守護】億萬年的海洋記憶。象徵生生不息與強大的守護力量，能安定心神，招財納福。", wear: "左手 (安定/招財) 或 吊墜", place: "神桌、玄關" },
+            { name: "黑閃靈共生紅泥骸骨", element: "水/火", numbers: [1, 9], effect: "【極致淨化與落實】黑閃靈的淨化力加上紅泥骸骨的強大落實力。能排除深層負能，同時穩固根基，將靈性落實於生活。", wear: "左手(平衡)或右手(排負)", place: "床頭、冥想區" },
+            { name: "膠花閃靈", element: "火/光", numbers: [3, 9], effect: "【顯化奇蹟】閃靈鑽中包裹著美麗膠花。放大顯化意念，帶來好運與奇蹟，提升個人頻率。", wear: "左手 (顯化/好運)", place: "財位、願望角" },
+            { name: "綠橄欖石 (Peridot)", element: "木/火", numbers: [3, 4], effect: "【太陽寶石】對應心輪與太陽輪。帶來光明的能量，消除負面情緒，招正財(4)與貴人，讓心情愉悅(3)。", wear: "左手 (招財/快樂)", place: "辦公桌、財位" },
+            { name: "女王貝 (Queen Shell)", element: "水/土", numbers: [2, 6], effect: "【孕育之愛】深海的有機寶石。具有強大的孕育與守護能量，能安神定氣，軟化尖銳的性格(2)，增進家庭和諧(6)。", wear: "左手 (柔和)", place: "臥室、梳妝台" },
+            { name: "硨磲 (Tridacna)", element: "金/水", numbers: [7, 9], effect: "【佛教七寶】潔白純淨，磁場穩定。能鎮心安神，啟發智慧(7)，消除煩惱業障(9)，適合修身養性。", wear: "左手 (安神)", place: "佛堂、靜坐區" },
+            { name: "丹泉石 (Tanzanite)", element: "水/火", numbers: [5, 7], effect: "【靈感之石】對應眉心輪與喉輪。提升直覺與溝通能力(5)，幫助深度冥想與靈性連結(7)，挖掘潛能。", wear: "左手 (靈感)", place: "書房、工作桌" },
+            { name: "雪佛龍紫晶 (Chevron Amethyst)", element: "火/水", numbers: [7, 9], effect: "【夢想啟示】紫水晶與白水晶的層狀共生。結合直覺(7)與淨化(9)，能增強靈視力與夢境解析能力。", wear: "左手 (靈視)", place: "枕頭下、床頭" },
+            { name: "珊瑚 (Coral)", element: "火/水", numbers: [1, 7], effect: "【生命之火】來自海洋的有機寶石。增強生命力與熱情(1)，同時帶來靈性保護(7)，適合體虛者。", wear: "左手 (活力)", place: "臥室" },
+            { name: "紫黃晶 (Ametrine)", element: "火/土", numbers: [3, 7], effect: "【雙重調和】結合紫水晶的靈性智慧(7)與黃水晶的財富自信(3)。能調和理性與感性，化解內在衝突，帶來全方位的富足與智慧。", wear: "左手 (智慧/招財)", place: "辦公桌、財位" },
+            { name: "鋰雲母 (Lepidolite)", element: "火", numbers: [6, 9], effect: "【變革之石】含有豐富的鋰元素。能極深度地釋放焦慮與壓力，協助度過人生的變動期(9)，帶來深層的平靜與自我接納(6)。", wear: "左手 (釋放焦慮)", place: "床頭、療癒室" },
+            { name: "白月光 (White Moonstone)", element: "水/光", numbers: [2, 7, 9], effect: "【純淨之光】潔白的月光石，對應頂輪。能淨化負面情緒，提升直覺力(7)與靈性感知(9)，帶來如月光般純淨的守護能量(2)。", wear: "左手 (淨化/直覺)", place: "枕頭下、梳妝台" },
+            { name: "綠月光 (Green Moonstone)", element: "木", numbers: [4, 6], effect: "【心靈滋養】稀有的綠色月光石，對應心輪。能療癒情感創傷(6)，帶來安全感與滋養的能量，讓心靈重新獲得生機(4)。", wear: "左手 (療癒/生機)", place: "臥室、客廳" },
+            { name: "藍紋石 (Sodalite)", element: "水", numbers: [5, 7], effect: "【理性與專注】深藍色帶白紋。能消除混亂的思緒，提升邏輯思考與專注力(7)，並增強溝通表達的條理性(5)，適合學生與腦力工作者。", wear: "左手 (專注/理性)", place: "書房、辦公桌" },
+            { name: "薰衣草螢石 (Lavender Fluorite)", element: "風/光", numbers: [7, 9], effect: "【柔和靈性】淡紫色的螢石。能量比一般紫螢石更溫柔，能清理氣場中的混亂，提升靈性頻率(9)與直覺(7)，帶來寧靜的智慧。", wear: "左手 (靈感/平靜)", place: "冥想室、床頭" },
+            { name: "黑銀鈦 (Black Silver Rutilated)", element: "水/金", numbers: [1, 8], effect: "【驅魔招財】黑髮晶與銀鈦晶的共生。擁有極強的避邪化煞能力(1)，同時銀色光芒能招財聚氣(8)，是職場防小人與提升氣場的利器。", wear: "右手(避邪)或左手(招財)", place: "辦公桌、玄關" },
+            { name: "蛋白石 (Opal)", element: "水/火", numbers: [2, 3], effect: "【藝術家之石】遊彩現象象徵無限的創意與潛能。能激發想像力與靈感(3)，釋放壓抑的情感，展現真實的自我與魅力(2)。", wear: "左手 (創意/魅力)", place: "工作室、化妝台" },
+            { name: "石榴石", element: "火", numbers: [1], effect: "【女人之石】對應海底輪。促進血液循環，增強體力與生命力，美容養顏。", wear: "左手 (增強氣血)", place: "化妝台" },
+            { name: "紫鋰輝", element: "火", numbers: [2, 6], effect: "【無私的愛】對應心輪。能暢通七脈輪，消除壓力，帶來無私與喜悅的愛。", wear: "左手 (愛的能量)", place: "臥室" },
+            { name: "藥王石", element: "土", numbers: [6, 9], effect: "【健康守護】對應心輪。釋放深層焦慮與壓力，磁場溫和強大，守護身心健康。", wear: "左手 (健康)", place: "床頭、老人房" },
+            { name: "鈦赫茲", element: "金", numbers: [1], effect: "【生命之光】高頻震動波。能促進血液循環，增強活力與行動力，消除疲勞。", wear: "左手或患處", place: "隨身攜帶" },
+            { name: "透石膏", element: "光", numbers: [7, 9], effect: "【淨化之光】無需淨化的高頻石。能快速清理氣場與空間，連結天使能量。", wear: "擺件", place: "淨化區、水晶旁" },
+            { name: "硃砂", element: "火", numbers: [1], effect: "【避邪鎮煞】陽氣極重。能避邪擋煞，安神定魂，增強生命力與行動力。", wear: "右手 (擋煞)", place: "玄關、車上" },
+            { name: "阿拉善", element: "土", numbers: [4], effect: "【大地之石】來自戈壁。能量厚實，能帶來踏實感，招財守財，保平安。", wear: "左手 (踏實)", place: "辦公室" },
+            { name: "余太翠", element: "木", numbers: [4], effect: "【溫潤養人】中國玉石。能養心安神，帶來吉祥與平安，穩定情緒。", wear: "擺件", place: "臥室" },
+            { name: "白水晶", element: "金/光", numbers: [9], effect: "【淨化之王】對應頂輪。能淨化所有負能量，提升專注力與記憶力，平衡身心靈。", wear: "左手 (專注) 或 右手 (淨化)", place: "任何位置，尤其是財位或煞位" },
+            { name: "綠幽靈", element: "木", numbers: [4], effect: "【正財與事業】對應心輪。被稱為「鬼佬財神」，主正財，能幫助事業發展，招來貴人，並帶來踏實的工作運與安全感(4)。", wear: "左手 (招正財)", place: "辦公桌左前方、財位" }
+        ];
+
+        // --- 初始化 ---
+        window.onload = function() {
+            // Populate Years (Current back to 1920)
+            const yearSelect = document.getElementById('birthYear');
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear; y >= 1920; y--) {
+                let opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = y;
+                yearSelect.appendChild(opt);
+            }
+
+            // Populate Months (1-12)
+            const monthSelect = document.getElementById('birthMonth');
+            for (let m = 1; m <= 12; m++) {
+                let opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m + '月';
+                monthSelect.appendChild(opt);
+            }
+
+            // Bind Events 
+            yearSelect.addEventListener('change', updateDays);
+            monthSelect.addEventListener('change', updateDays);
             
-            // --- 本次大量新增 ---
-            { name: "白水晶", element: "金/光", numbers: [9], effect: "【淨化之王】對應頂輪。能淨化所有負能量，提升專注力與記憶力，平衡身心靈。" },
-            { name: "黃水晶", element: "土/金", numbers: [3, 8], effect: "【財富之石】對應太陽輪。主聚財，能消除恐懼，帶來自信與快樂。" },
-            { name: "鈦晶", element: "金/火", numbers: [3, 8], effect: "【能量之王】對應太陽輪。能量霸道，招正偏財，增強氣場與決斷力。" },
-            { name: "碧璽", element: "全元素", numbers: [2,3,4,5,6], effect: "【願望寶石】落入人間的彩虹，能平衡各脈輪，暢通血氣，招財旺夫。" },
-            { name: "紅瑪瑙", element: "火", numbers: [1], effect: "【正向與熱情】對應海底輪。消除壓力與疲勞，增強行動力與勇氣。" },
-            { name: "藍紋瑪瑙", element: "水", numbers: [5], effect: "【平靜與溝通】對應喉輪。平復焦躁情緒，幫助順暢表達與冷靜思考。" },
-            { name: "水草瑪瑙", element: "木/水", numbers: [4], effect: "【生機與靈活】如水中水草般靈動。能增強適應力，帶來生機與事業發展。" },
-            { name: "鹽源瑪瑙", element: "火/土", numbers: [2, 6], effect: "【療癒與人緣】色彩豐富如糖果。能療癒驚嚇，舒緩緊張，增進人緣與親和力。" },
-            { name: "藍玉隨", element: "水", numbers: [5], effect: "【避邪與護身】對應喉輪。古老的護身符，能阻擋負能量，防小人，助溝通。" },
-            { name: "方解晶鎮", element: "土/金", numbers: [8, 9], effect: "【化煞聚財】方解石能化解家中煞氣，晶鎮型態更能鎮守財庫，淨化磁場。" },
-            { name: "異象軟糖爆球花晶鎮", element: "土/火", numbers: [9], effect: "【特殊淨化】稀有共生礦，外型獨特。能強力淨化空間，提升靈性能量。" },
-            { name: "海藍寶", element: "水", numbers: [5], effect: "【勇氣之石】對應喉輪。加強表達能力與領悟力，平撫急躁，適合溝通者。" },
-            { name: "紅膠花", element: "火", numbers: [1], effect: "【貴人與開運】水晶內的紅色異象。能招貴人，增強運勢與行動力。" },
-            { name: "黃膠花", element: "土", numbers: [3, 8], effect: "【偏財與自信】水晶內的黃色異象。能招偏財，增強自信與企圖心。" },
-            { name: "草莓晶", element: "火", numbers: [6], effect: "【愛情與人緣】對應心輪。增進個人魅力，招好桃花，改善人際關係。" },
-            { name: "綠草莓晶", element: "木", numbers: [4], effect: "【和諧與事業】稀有綠色草莓晶。主事業與人際和諧，帶來穩定的發展。" },
-            { name: "紫粉超七", element: "火/光", numbers: [6, 7], effect: "【靈性與愛】紫粉色系超七。側重於靈性提升與愛的能量，適合冥想與療癒。" },
-            { name: "彩超七", element: "全元素", numbers: [1,2,3,4,5,6,7,8,9], effect: "【平衡與揚升】色彩豐富，能平衡七脈輪，提升整體頻率與運勢。" },
-            { name: "天河石", element: "水", numbers: [5], effect: "【希望之石】對應喉輪。帶來幸運與貴人，幫助順暢溝通，重燃信心。" },
-            { name: "拉長石", element: "水", numbers: [7, 9], effect: "【靈魂行者】對應頂輪。開闊僵化思維，提升直覺與洞察力，連結高我。" },
-            { name: "黃方解", element: "土/金", numbers: [3, 8], effect: "【繁榮與財富】黃色對應太陽輪。能招財聚氣，消除自我懷疑，帶來繁榮。" },
-            { name: "千層黃方解擺件", element: "土/金", numbers: [3, 8], effect: "【步步高升】層層堆疊的紋路象徵財富累積與事業高升。" },
-            { name: "紫鈦方解石擺件", element: "火/金", numbers: [7, 8], effect: "【靈性與財富】稀有共生礦。結合智慧與財富能量，提升靈性財商。" },
-            { name: "兔毛螢石-綠", element: "木", numbers: [4], effect: "【穩定與療癒】綠色對應心輪，絲狀內含物增強能量導引，帶來情緒穩定。" },
-            { name: "兔毛螢石-藍", element: "水", numbers: [5], effect: "【溝通與流動】藍色對應喉輪，絲狀內含物幫助能量流動，增進溝通。" },
-            { name: "彩螢石", element: "全元素", numbers: [4, 7], effect: "【智慧之石】去除雜念，提升專注力與創意，幫助思緒清晰。" },
-            { name: "黃金雲母瑩石擺件", element: "土/金", numbers: [3, 8], effect: "【閃耀與招財】螢石共生雲母。帶來如黃金般的閃耀財氣，提升自信與魅力。" },
-            { name: "紫螢石", element: "水", numbers: [7], effect: "【靈性與專注】對應眉心輪。提升直覺，排除腦部疲勞，適合靈修與用腦過度者。" },
-            { name: "金運石", element: "金", numbers: [1, 8], effect: "【極致招財】黑底金線。強力避邪擋煞(1)，招財效果極佳(8)，適合職場與博弈。" },
-            { name: "綠龍晶", element: "木", numbers: [4], effect: "【天使之翼】對應心輪。消除孤獨與挫折感，帶來溫暖與療癒，助事業發展。" },
-            { name: "藍珀", element: "木/水", numbers: [2, 5], effect: "【安神與定氣】有機寶石。能安神定氣，改善睡眠，幫助情緒穩定與溝通。" },
-            { name: "紫鋰輝", element: "火", numbers: [2, 6], effect: "【無私的愛】對應心輪。能暢通七脈輪，消除壓力，帶來無私與喜悅的愛。" },
-            { name: "石榴石", element: "火", numbers: [1], effect: "【女人之石】對應海底輪。促進血液循環，增強體力與生命力，美容養顏。" },
-            { name: "舒俱萊", element: "火/水", numbers: [6, 7, 9], effect: "【治癒之石】對應眉心輪。能清除深層負能量，提升免疫力，開啟靈性智慧。" },
-            { name: "藥王石", element: "土", numbers: [6, 9], effect: "【健康守護】對應心輪。釋放深層焦慮與壓力，磁場溫和強大，守護身心健康。" },
-            { name: "鈦赫茲", element: "金", numbers: [1], effect: "【生命之光】高頻震動波。能促進血液循環，增強活力與行動力，消除疲勞。" },
-            { name: "異極礦擺件", element: "水", numbers: [2, 5], effect: "【轉化與提升】對應喉輪。能轉化負面情緒，帶來樂觀與喜悅，助溝通。" },
-            { name: "透石膏擺件", element: "光", numbers: [7, 9], effect: "【淨化之光】無需淨化的高頻石。能快速清理氣場與空間，連結天使能量。" },
-            { name: "葡萄石", element: "木", numbers: [4, 6], effect: "【希望之石】淡淡綠色。能指引方向(4)，療癒內心創傷，舒緩緊張壓力(6)。" },
-            { name: "紅紋石", element: "火", numbers: [2, 6], effect: "【愛神之石】對應心輪。能療癒失戀痛苦，招來美好姻緣，讓愛再次流動。" },
-            { name: "紫龍晶", element: "火/水", numbers: [7], effect: "【慈悲與智慧】對應頂輪。能消除孤獨與恐懼，帶來慈悲與智慧，助靈性成長。" },
-            { name: "彼得石", element: "水/金", numbers: [1, 3, 8], effect: "【暴風雨寶石】王者之石。能激發勇氣(1)，開啟創意(3)，帶來強大財運(8)。" },
-            { name: "拉利瑪", element: "水", numbers: [5], effect: "【海豚之石】對應喉輪。能療癒深層的情感創傷(6)，並帶來如海洋般平靜的溝通能量(5)。" },
-            { name: "預言石擺件", element: "土", numbers: [7, 9], effect: "【預知與落地】能開啟頂輪與海底輪。幫助連結高維度訊息，並將其落實於生活。" },
-            { name: "黃銅礦擺件", element: "金", numbers: [3, 8], effect: "【顯化財富】金色礦石。能增強自信，將靈性洞見顯化為物質財富。" },
-            { name: "硃砂", element: "火", numbers: [1], effect: "【避邪鎮煞】陽氣極重。能避邪擋煞，安神定魂，增強生命力與行動力。" },
-            { name: "阿拉善", element: "土", numbers: [4], effect: "【大地之石】來自戈壁。能量厚實，能帶來踏實感，招財守財，保平安。" },
-            { name: "火焰石擺件", element: "火", numbers: [1, 3], effect: "【能量爆發】紫外線下發光。能點燃內心火焰，增強自信與表達力，釋放恐懼。" },
-            { name: "余太翠擺件", element: "木", numbers: [4], effect: "【溫潤養人】中國玉石。能養心安神，帶來吉祥與平安，穩定情緒。" },
-            { name: "綠幽靈", element: "木", numbers: [4], effect: "【正財與事業】對應心輪。被稱為「鬼佬財神」，主正財，能幫助事業發展，招來貴人，並帶來踏實的工作運與安全感(4)。" }
-        ];
-
-        const linesDef = [
-            { nums: [1, 2, 3], name: "藝術線", benefit: "擁有美學與創意的能量，能自在表達自我。" },
-            { nums: [4, 5, 6], name: "組織線", benefit: "做事有條理，能完美執行計畫與解決問題。" },
-            { nums: [7, 8, 9], name: "權力線", benefit: "擁有強大氣場與貴人運，容易獲得社會成就。" },
-            { nums: [1, 4, 7], name: "務實線", benefit: "腳踏實地，對金錢與物質生活有極佳的掌控力。" },
-            { nums: [2, 5, 8], name: "感情線", benefit: "善於溝通與表達情感，擁有極佳的人緣魅力。" },
-            { nums: [3, 6, 9], name: "智慧線", benefit: "充滿靈性智慧，直覺敏銳，能洞察事物本質。" },
-            { nums: [1, 5, 9], name: "事業線", benefit: "擁有強烈企圖心與工作狂特質，事業發展無可限量。" },
-            { nums: [3, 5, 7], name: "人緣線", benefit: "極具個人魅力，受人歡迎，容易成為群體焦點。" }
-        ];
-
-        const flowMonthData = {
-            1: { keyword: "播種期", desc: "採取行動的最佳時機。適合「紅瑪瑙」或「金運石」，增強開創勇氣。" },
-            2: { keyword: "蟄伏期", desc: "適合細膩溝通。推薦「藍珀」或「紫鋰輝」，讓情緒保持柔和穩定。" },
-            3: { keyword: "萌芽期", desc: "社交能量活躍。適合「黃水晶」或「鈦晶」，展現光芒，多參加聚會。" },
-            4: { keyword: "紮根期", desc: "專注與務實。推薦「水草瑪瑙」或「阿拉善」，釋放壓力並鞏固成果。" },
-            5: { keyword: "變化期", desc: "意想不到的機會。適合「海藍寶」或「天河石」，保持順暢溝通。" },
-            6: { keyword: "關懷期", desc: "回歸情感與愛。推薦「草莓晶」或「紅紋石」，療癒關係，化解隔閡。" },
-            7: { keyword: "省思期", desc: "適合獨處進修。推薦「紫龍晶」或「拉長石」，提升內在智慧。" },
-            8: { keyword: "收穫期", desc: "成果顯化。適合「方解晶鎮」或「彼得石」，承接豐盛能量，肯定自我價值。" },
-            9: { keyword: "完結期", desc: "清理與放下。推薦「透石膏」或「白水晶」，淨化並迎接新循環。" }
+            // Initial call to populate days based on default/placeholder year/month
+            updateDays();
         };
 
-        const dailyQuotes = {
-            1: "【流日1】今天的能量適合「開始」。別讓猶豫阻擋你的腳步，相信直覺，勇敢為自己踏出第一步。",
-            2: "【流日2】今天的能量柔軟而細膩。若感到情緒波動，請給自己一個擁抱，溫柔其實是種強大的力量。",
-            3: "【流日3】今天的能量充滿創意與孩子氣。別把話悶在心裡，試著表達真實的感受，快樂會隨之而來。",
-            4: "【流日4】今天的能量需要「穩定」。即使外在環境變動，請記得你的內心依然可以像大樹一樣扎根安穩。",
-            5: "【流日5】今天的能量自由奔放。若計畫趕不上變化，不如享受這場冒險，驚喜往往藏在未知的轉彎處。",
-            6: "【流日6】今天的能量充滿愛與責任。在照顧別人的同時，別忘了留一杯茶的時間給自己，你也很重要。",
-            7: "【流日7】今天的能量適合沉澱。遠離喧囂，給大腦一點空白，你尋找的答案往往會在靜心中浮現。",
-            8: "【流日8】今天的能量豐盛強大。請相信自己的價值，你有能力顯化心中渴望的富足與成就。",
-            9: "【流日9】今天的能量適合「清理」。放下那些不再服務於你的情緒與舊物，騰出空間，迎接新的美好。"
-        };
+        // --- 核心邏輯函式 ---
+        
+        function getStoneData(stoneName) {
+            const normalize = (n) => n.split('(')[0].trim().replace(/擺件|晶鎮/g, '');
+            const targetName = normalize(stoneName);
+            
+            let match = crystalDB.find(c => normalize(c.name) === targetName);
+            if (match) return match;
+            
+            match = crystalDB.find(c => normalize(c.name).includes(targetName) || targetName.includes(normalize(c.name)));
+            return match;
+        }
 
-        // --- 邏輯函數 ---
+        function updateDays() {
+            const yearSelect = document.getElementById('birthYear');
+            const monthSelect = document.getElementById('birthMonth');
+            const daySelect = document.getElementById('birthDay');
+            
+            // Get values, default to 2000/1 if not selected to calculate days correctly
+            const year = parseInt(yearSelect.value) || 2000;
+            const month = parseInt(monthSelect.value) || 1;
+            
+            // Get currently selected day to preserve it if possible
+            const currentSelection = parseInt(daySelect.value);
+
+            // Calculate days in month (0th day of next month gets last day of current)
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            // Store current selection if valid
+            let selectedDay = daySelect.value;
+
+            // Clear current options but keep the placeholder
+            daySelect.innerHTML = '<option value="" disabled selected>日 Day</option>';
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                let opt = document.createElement('option');
+                opt.value = d;
+                opt.innerText = d;
+                
+                // If previously selected day is within range, re-select it
+                if (d == selectedDay) {
+                    opt.selected = true;
+                }
+                daySelect.appendChild(opt);
+            }
+        }
+
+        function getZodiacInfo(m, d) {
+            const dateNum = m * 100 + d;
+            if ((dateNum >= 1222 || dateNum <= 119) || (dateNum >= 321 && dateNum <= 419)) return { name: (dateNum>=1222||dateNum<=119)?"摩羯座":"牡羊座", num: 1 };
+            if ((dateNum >= 120 && dateNum <= 218) || (dateNum >= 420 && dateNum <= 520)) return { name: (dateNum>=120&&dateNum<=218)?"水瓶座":"金牛座", num: 2 };
+            if ((dateNum >= 219 && dateNum <= 320) || (dateNum >= 521 && dateNum <= 621)) return { name: (dateNum>=219&&dateNum<=320)?"雙魚座":"雙子座", num: 3 };
+            if (dateNum >= 622 && dateNum <= 722) return { name: "巨蟹座", num: 4 };
+            if (dateNum >= 723 && dateNum <= 822) return { name: "獅子座", num: 5 };
+            if (dateNum >= 823 && dateNum <= 922) return { name: "處女座", num: 6 };
+            if (dateNum >= 923 && dateNum <= 1023) return { name: "天秤座", num: 7 };
+            if (dateNum >= 1024 && dateNum <= 1122) return { name: "天蠍座", num: 8 };
+            if (dateNum >= 1123 && dateNum <= 1221) return { name: "射手座", num: 9 };
+            return { name: "未知", num: 0 };
+        }
+
         function sumDigits(num) {
             let sum = 0;
             const digits = num.toString().split('');
@@ -916,12 +1030,13 @@
                 document.getElementById('noMissing').classList.add('hidden');
                 document.getElementById('missingContainer').classList.remove('hidden');
                 
+                // Keep Special Recs visible if needed, but make Missing Number cards the main focus
                 const specialRecs = getSpecialRecommendations(missing);
                 if (specialRecs.length > 0) {
                     specialSection.classList.remove('hidden');
                     specialRecs.forEach(spec => {
                          const div = document.createElement('div');
-                         div.className = 'bg-[#3d3124] border border-[#967740]/30 p-4 rounded-xl';
+                         div.className = 'bg-[#3d3124] border border-[#967740]/30 p-4 rounded-xl cursor-pointer';
                          const coverTags = spec.covers
                             .filter(n => missing.includes(n))
                             .map(n => `<span class="text-xs bg-[#bca065] text-[#2c241b] px-1.5 py-0.5 rounded font-bold mr-1">缺${n}</span>`)
@@ -933,6 +1048,11 @@
                             <div class="mb-2">${coverTags}</div>
                             <p class="text-xs text-[#bca065]/90 leading-relaxed">${spec.desc}</p>
                          `;
+                         div.onclick = () => {
+                             const stoneName = spec.name;
+                             const stoneData = getStoneData(stoneName) || spec; // Fallback to spec object if not in DB
+                             openModal(stoneData);
+                         };
                          specialContainer.appendChild(div);
                     });
                 } else {
@@ -952,12 +1072,14 @@
                         ).join('');
                         lineHtml = lineContent;
                     }
-                    const stonesHtml = data.stones.map(s => `<span class="tag-pill">${s}</span>`).join('');
+                    
                     const div = document.createElement('div');
                     div.className = 'bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-between';
+                    
+                    // Directly list crystal items below description with a clear header
                     div.innerHTML = `
                         <div>
-                            <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-start justify-between mb-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-[#967740] text-white flex items-center justify-center font-bold text-lg font-serif shadow-md shrink-0">
                                         ${num}
@@ -968,12 +1090,31 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <div class="flex flex-wrap gap-1">${stonesHtml}</div>
+                            
+                            <!-- Crystal List Section -->
+                            <div class="mt-4 pt-3 border-t border-gray-100">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">RECOMMENDED CRYSTALS (建議補給水晶)</p>
+                                <div class="flex flex-wrap gap-2" id="tags-${num}"></div> 
                             </div>
                         </div>
+                        
                         ${lineHtml ? `<div>${lineHtml}</div>` : ''}
                     `;
+                    
+                    // Append tags dynamically to add click listeners
+                    const tagsContainer = div.querySelector(`#tags-${num}`);
+                    data.stones.forEach(s => {
+                        const span = document.createElement('span');
+                        span.className = 'tag-pill';
+                        span.innerText = s;
+                        span.onclick = (e) => {
+                            e.stopPropagation();
+                            const stoneData = getStoneData(s);
+                            if(stoneData) openModal(stoneData);
+                        };
+                        tagsContainer.appendChild(span);
+                    });
+
                     missingContainer.appendChild(div);
                 });
             }
@@ -1006,7 +1147,20 @@
             
             const flowInfo = flowMonthData[displayFlowMonth];
             const recStones = numberCrystals[displayFlowMonth].stones.slice(0, 4);
-            document.getElementById('flowCrystal').innerHTML = recStones.map(s => `<span class="tag-pill border-gold/30 text-gold-dark bg-white">${s}</span>`).join('');
+            
+            const flowCrystalContainer = document.getElementById('flowCrystal');
+            flowCrystalContainer.innerHTML = '';
+            recStones.forEach(s => {
+                const span = document.createElement('span');
+                span.className = 'tag-pill border-gold/30 text-gold-dark bg-white';
+                span.innerText = s;
+                span.onclick = () => {
+                     const stoneData = getStoneData(s);
+                     if(stoneData) openModal(stoneData);
+                };
+                flowCrystalContainer.appendChild(span);
+            });
+
             document.getElementById('flowDesc').innerText = `【${flowInfo.keyword}】${flowInfo.desc}`;
             
             // Flow Day
@@ -1025,7 +1179,6 @@
             }, 100);
         }
 
-        // Re-declare resetApp and searchCrystal to ensure scope access
         function resetApp() {
             document.getElementById('birthYear').selectedIndex = 0;
             document.getElementById('birthMonth').selectedIndex = 0;
@@ -1035,6 +1188,25 @@
             document.getElementById('crystalSearchInput').value = '';
             document.getElementById('crystalSearchResult').classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function openModalByName(name) {
+            const stoneData = getStoneData(name);
+            if(stoneData) openModal(stoneData);
+        }
+        
+        function openModal(item) {
+            document.getElementById('modalTitle').innerText = item.name;
+            document.getElementById('modalElement').innerText = item.element + (item.numbers ? " | 靈數: " + item.numbers.join(',') : "");
+            document.getElementById('modalEffect').innerText = item.effect;
+            document.getElementById('modalWear').innerText = item.wear || "建議佩戴於左手，感受能量流動。";
+            document.getElementById('modalPlace').innerText = item.place || "適合擺放於乾淨、明亮之處。";
+            
+            document.getElementById('crystalModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('crystalModal').classList.add('hidden');
         }
         
         function searchCrystal() {
@@ -1050,14 +1222,11 @@
             if (matches.length > 0) {
                 resultContainer.classList.remove('hidden');
                 matches.forEach(item => {
-                    const numTags = item.numbers.map(n => `<span class="inline-block w-6 h-6 rounded-full bg-[#967740] text-white text-xs text-center leading-6 mr-1">${n}</span>`).join('');
+                    const numTags = item.numbers ? item.numbers.map(n => `<span class="inline-block w-6 h-6 rounded-full bg-[#967740] text-white text-xs text-center leading-6 mr-1">${n}</span>`).join('') : '';
                     
-                    // Extract search term: take characters before ' (', ' /', or '（'
-                    let searchTerm = item.name.split(/[ (（/]/)[0].trim();
-                    const shopLink = `https://www.qiyicrystal.com/?s=${encodeURIComponent(searchTerm)}&post_type=product`;
-
                     const div = document.createElement('div');
-                    div.className = 'bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2';
+                    div.className = 'bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2 cursor-pointer hover:shadow-md transition-shadow';
+                    div.onclick = () => openModal(item); // Click to open modal
                     div.innerHTML = `
                         <div class="flex justify-between items-center border-b border-gray-100 pb-2">
                             <h4 class="font-bold text-lg text-gray-800">${item.name}</h4>
@@ -1067,16 +1236,8 @@
                             <span class="text-xs text-gray-400">對應靈數:</span>
                             <div>${numTags}</div>
                         </div>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            ${item.effect}
-                            <br>
-                            <a href="${shopLink}" target="_blank" class="inline-flex items-center mt-2 text-gold font-bold hover:text-[#755c32] transition-colors text-xs tracking-wider border border-gold/30 px-3 py-1.5 rounded-full bg-gold/5">
-                                <span>前往選購</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
-                        </p>
+                        <p class="text-sm text-gray-600 leading-relaxed truncate">${item.effect}</p>
+                        <p class="text-xs text-gold text-right mt-1">點擊查看詳情 &rarr;</p>
                     `;
                     resultContainer.appendChild(div);
                 });
